@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -39,7 +41,11 @@ class OnlineGameScreen extends ConsumerWidget {
                   return _RoleRevealOnline(code: code, isHost: isHost);
                 case GamePhase.clue:
                   return _CluePhaseOnline(
-                      code: code, room: room, members: members, isHost: isHost);
+                      code: code,
+                      room: room,
+                      members: members,
+                      uid: uid,
+                      isHost: isHost);
                 case GamePhase.voting:
                   return _VotingOnline(
                       code: code, members: members, uid: uid, isHost: isHost);
@@ -167,7 +173,7 @@ class _RoleRevealOnline extends ConsumerWidget {
           isHost: isHost,
           label: 'Start Clues',
           icon: Icons.record_voice_over,
-          onPressed: () => repo.setPhase(code, GamePhase.clue),
+          onPressed: () => repo.beginCluePhase(code),
           waitingText: 'Remember your role. Waiting for the host…',
         ),
       ],
@@ -177,23 +183,112 @@ class _RoleRevealOnline extends ConsumerWidget {
 
 // ---- Clue phase -----------------------------------------------------------
 
-class _CluePhaseOnline extends ConsumerWidget {
+class _CluePhaseOnline extends ConsumerStatefulWidget {
   const _CluePhaseOnline({
     required this.code,
     required this.room,
     required this.members,
+    required this.uid,
     required this.isHost,
   });
   final String code;
   final OnlineRoom room;
   final List<OnlineMember> members;
+  final String? uid;
   final bool isHost;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_CluePhaseOnline> createState() => _CluePhaseOnlineState();
+}
+
+class _CluePhaseOnlineState extends ConsumerState<_CluePhaseOnline> {
+  final _controller = TextEditingController();
+
+  /// Drives the countdown display and (on the host) turn advancement.
+  Timer? _ticker;
+
+  /// Guards against firing overlapping advance writes while one is in flight.
+  bool _advancing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      setState(() {}); // refresh the countdown
+      _maybeAdvance();
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  /// HOST ONLY. Advances the turn once the current player has submitted a clue
+  /// or their countdown has run out.
+  Future<void> _maybeAdvance() async {
+    if (!widget.isHost || _advancing) return;
+    final turnUid = widget.room.currentTurnUid;
+    if (turnUid == null) return;
+
+    final current =
+        widget.members.where((m) => m.uid == turnUid).firstOrNull;
+    final submitted = current?.clue != null;
+    final deadline = widget.room.turnDeadline;
+    final expired = deadline != null && DateTime.now().isAfter(deadline);
+
+    if (submitted || expired) {
+      _advancing = true;
+      try {
+        await ref.read(roomRepositoryProvider).advanceClueTurn(widget.code);
+      } finally {
+        _advancing = false;
+      }
+    }
+  }
+
+  int _secondsLeft() {
+    final deadline = widget.room.turnDeadline;
+    if (deadline == null) return 0;
+    final s = deadline.difference(DateTime.now()).inSeconds;
+    return s < 0 ? 0 : s;
+  }
+
+  void _submit(String? secretWord) {
+    final text = _controller.text.trim();
+    final messenger = ScaffoldMessenger.of(context);
+    if (text.isEmpty) {
+      messenger.showSnackBar(
+          const SnackBar(content: Text('Clue cannot be empty.')));
+      return;
+    }
+    if (secretWord != null &&
+        text.toLowerCase().contains(secretWord.toLowerCase())) {
+      messenger.showSnackBar(const SnackBar(
+          content: Text('Your clue cannot contain the secret word.')));
+      return;
+    }
+    ref.read(roomRepositoryProvider).submitClue(widget.code, widget.uid!, text);
+    _controller.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final repo = ref.read(roomRepositoryProvider);
-    // Members already arrive sorted by join time; just keep the living ones.
-    final ordered = members.where((m) => m.isAlive).toList();
+    final room = widget.room;
+    final ordered = widget.members.where((m) => m.isAlive).toList();
+    final turnUid = room.currentTurnUid;
+    final allCluesIn = turnUid == null;
+    final isMyTurn = widget.uid != null && widget.uid == turnUid;
+    final me = widget.members.where((m) => m.uid == widget.uid).firstOrNull;
+    final iSubmitted = me?.clue != null;
+    final secretWord = ref.watch(myRoleStreamProvider(widget.code)).value?.secretWord;
+    final secondsLeft = _secondsLeft();
+    final turnName =
+        widget.members.where((m) => m.uid == turnUid).firstOrNull?.name;
 
     return Column(
       children: [
@@ -208,9 +303,18 @@ class _CluePhaseOnline extends ConsumerWidget {
                       style: Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.center),
                   const SizedBox(height: 8),
-                  const Text(
-                      'Say ONE short clue out loud, in order. Don\'t say the word!',
-                      textAlign: TextAlign.center),
+                  if (allCluesIn)
+                    const Text('All clues are in. Time to vote!',
+                        textAlign: TextAlign.center)
+                  else ...[
+                    Text(
+                        isMyTurn
+                            ? 'Your turn — type ONE word. Don\'t use the secret word!'
+                            : '${turnName ?? 'Someone'} is giving a clue…',
+                        textAlign: TextAlign.center),
+                    const SizedBox(height: 8),
+                    _Countdown(seconds: secondsLeft),
+                  ],
                 ],
               ),
             ),
@@ -219,18 +323,89 @@ class _CluePhaseOnline extends ConsumerWidget {
         Expanded(
           child: ListView.builder(
             itemCount: ordered.length,
-            itemBuilder: (_, i) => ListTile(
-              leading: CircleAvatar(child: Text('${i + 1}')),
-              title: Text(ordered[i].name),
-            ),
+            itemBuilder: (_, i) {
+              final m = ordered[i];
+              final isTurn = m.uid == turnUid;
+              final isMe = m.uid == widget.uid;
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: isTurn ? Colors.amber.shade700 : null,
+                  child: Text('${i + 1}'),
+                ),
+                title: Text(isMe ? '${m.name} (you)' : m.name),
+                trailing: m.clue != null
+                    ? Chip(label: Text(m.clue!))
+                    : Text(isTurn ? 'typing…' : 'waiting',
+                        style: const TextStyle(color: Colors.white54)),
+              );
+            },
           ),
         ),
+        if (isMyTurn && !iSubmitted)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    autofocus: true,
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (_) => _submit(secretWord),
+                    decoration: const InputDecoration(
+                      hintText: 'Your one-word clue',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(
+                  onPressed: () => _submit(secretWord),
+                  child: const Text('Send'),
+                ),
+              ],
+            ),
+          )
+        else if (!allCluesIn && !isMyTurn)
+          const Padding(
+            padding: EdgeInsets.all(12),
+            child: Text('Wait for your turn…',
+                style: TextStyle(color: Colors.white70)),
+          ),
         _HostControls(
-          isHost: isHost,
+          isHost: widget.isHost,
           label: 'Open Voting',
           icon: Icons.how_to_vote,
-          onPressed: () => repo.openVoting(code),
+          onPressed: () => repo.openVoting(widget.code),
+          waitingText: allCluesIn
+              ? 'Waiting for the host to open voting…'
+              : 'Waiting for clues…',
         ),
+      ],
+    );
+  }
+}
+
+/// Big circular countdown for the current clue turn.
+class _Countdown extends StatelessWidget {
+  const _Countdown({required this.seconds});
+  final int seconds;
+
+  @override
+  Widget build(BuildContext context) {
+    final urgent = seconds <= 5;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.timer,
+            size: 20, color: urgent ? Colors.redAccent : Colors.white70),
+        const SizedBox(width: 6),
+        Text('${seconds}s',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: urgent ? Colors.redAccent : Colors.white,
+            )),
       ],
     );
   }
@@ -278,6 +453,7 @@ class _VotingOnline extends ConsumerWidget {
                     width: double.infinity,
                     child: _VoteButton(
                       name: m.name,
+                      clue: m.clue,
                       selected: myVote == m.uid,
                       onPressed: (iAmAlive && uid != null)
                           ? () => repo.castVote(code, uid!, m.uid)
@@ -311,17 +487,29 @@ class _VotingOnline extends ConsumerWidget {
 class _VoteButton extends StatelessWidget {
   const _VoteButton({
     required this.name,
+    required this.clue,
     required this.selected,
     required this.onPressed,
   });
 
   final String name;
+  final String? clue;
   final bool selected;
   final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    final label = Text(name, style: const TextStyle(fontSize: 18));
+    final label = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(name, style: const TextStyle(fontSize: 18)),
+        Text(
+          clue == null || clue!.isEmpty ? '(no clue given)' : 'Clue: "$clue"',
+          style: const TextStyle(fontSize: 13, fontStyle: FontStyle.italic),
+        ),
+      ],
+    );
     final icon = Icon(selected ? Icons.check_circle : Icons.person);
     final padding =
         const EdgeInsets.symmetric(vertical: 16);

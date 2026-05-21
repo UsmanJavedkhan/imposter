@@ -43,6 +43,13 @@ class OnlineRoom {
   /// Stable join order of player uids (used for clue turn order).
   final List<String> playerOrder;
 
+  /// During the clue phase, whose turn it is to type a clue (null = nobody /
+  /// all clues are in).
+  final String? currentTurnUid;
+
+  /// When the current clue turn expires. The turn auto-advances after this.
+  final DateTime? turnDeadline;
+
   /// Revealed only at game over so everyone can see the truth.
   final String? revealedSecretWord;
   final Map<String, String> revealedRoles;
@@ -59,6 +66,8 @@ class OnlineRoom {
     required this.lastEliminatedId,
     required this.lastEliminatedRole,
     required this.playerOrder,
+    required this.currentTurnUid,
+    required this.turnDeadline,
     required this.revealedSecretWord,
     required this.revealedRoles,
   });
@@ -80,6 +89,9 @@ class OnlineRoom {
       lastEliminatedRole: _roleFromString(d['lastEliminatedRole'] as String?),
       playerOrder:
           (d['playerOrder'] as List<dynamic>? ?? const []).cast<String>(),
+      currentTurnUid: d['currentTurnUid'] as String?,
+      turnDeadline:
+          d['turnDeadline'] is Timestamp ? (d['turnDeadline'] as Timestamp).toDate() : null,
       revealedSecretWord: d['revealedSecretWord'] as String?,
       revealedRoles:
           (d['revealedRoles'] as Map<String, dynamic>? ?? const {})
@@ -97,6 +109,10 @@ class OnlineMember {
   final bool isHost;
   final String? voteTargetId;
 
+  /// The one-word clue this player typed for the current round (null = not
+  /// submitted yet, or cleared between rounds).
+  final String? clue;
+
   /// When the player joined — used to order players (e.g. clue turn order).
   final DateTime? joinedAt;
 
@@ -107,6 +123,7 @@ class OnlineMember {
     required this.isConnected,
     required this.isHost,
     required this.voteTargetId,
+    required this.clue,
     required this.joinedAt,
   });
 
@@ -120,6 +137,7 @@ class OnlineMember {
       isConnected: d['isConnected'] as bool? ?? true,
       isHost: d['isHost'] as bool? ?? false,
       voteTargetId: d['voteTargetId'] as String?,
+      clue: d['clue'] as String?,
       joinedAt: ts is Timestamp ? ts.toDate() : null,
     );
   }

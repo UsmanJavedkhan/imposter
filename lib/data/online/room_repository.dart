@@ -13,8 +13,25 @@ class RoomRepository {
   final FirebaseFirestore _db;
   final Random _random = Random();
 
+  /// How long each player gets to type a clue before the turn auto-advances.
+  static const int clueTurnSeconds = 30;
+
   // Avoid ambiguous characters (0/O, 1/I) in room codes.
   static const _codeAlphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+  /// Members in stable join order (host first, undefined timestamps last).
+  /// Matches the ordering used by [watchMembers] so turn order is consistent.
+  int _byJoin(OnlineMember a, OnlineMember b) {
+    final at = a.joinedAt;
+    final bt = b.joinedAt;
+    if (at == null && bt == null) return 0;
+    if (at == null) return 1;
+    if (bt == null) return -1;
+    return at.compareTo(bt);
+  }
+
+  Timestamp _turnDeadlineFromNow() =>
+      Timestamp.fromDate(DateTime.now().add(const Duration(seconds: clueTurnSeconds)));
 
   CollectionReference<Map<String, dynamic>> get _rooms => _db.collection('rooms');
   DocumentReference<Map<String, dynamic>> _room(String code) => _rooms.doc(code);
@@ -78,6 +95,8 @@ class RoomRepository {
         'winner': null,
         'lastEliminatedId': null,
         'playerOrder': [uid],
+        'currentTurnUid': null,
+        'turnDeadline': null,
         'revealedSecretWord': null,
         'revealedRoles': <String, String>{},
         'createdAt': FieldValue.serverTimestamp(),
@@ -88,6 +107,7 @@ class RoomRepository {
         'isConnected': true,
         'isHost': true,
         'voteTargetId': null,
+        'clue': null,
         'joinedAt': FieldValue.serverTimestamp(),
       });
       return code;
@@ -116,6 +136,7 @@ class RoomRepository {
       'isConnected': true,
       'isHost': false,
       'voteTargetId': null,
+      'clue': null,
       'joinedAt': FieldValue.serverTimestamp(),
     });
   }
@@ -174,6 +195,8 @@ class RoomRepository {
       'winner': null,
       'lastEliminatedId': null,
       'lastEliminatedRole': null,
+      'currentTurnUid': null,
+      'turnDeadline': null,
       'revealedSecretWord': null,
       'revealedRoles': <String, String>{},
     });
@@ -185,6 +208,58 @@ class RoomRepository {
 
   Future<void> setPhase(String code, GamePhase phase) =>
       _room(code).update({'phase': phase.name});
+
+  // ---- Clue phase ----------------------------------------------------------
+
+  /// HOST ONLY. Enters the clue phase: clears every player's previous clue and
+  /// points the turn at the first living player with a fresh countdown.
+  Future<void> beginCluePhase(String code) async {
+    final membersSnap = await _members(code).get();
+    final members = membersSnap.docs.map(OnlineMember.fromDoc).toList()
+      ..sort(_byJoin);
+    final firstAlive = members.where((m) => m.isAlive).firstOrNull;
+
+    final batch = _db.batch();
+    for (final d in membersSnap.docs) {
+      batch.update(d.reference, {'clue': null});
+    }
+    batch.update(_room(code), {
+      'phase': GamePhase.clue.name,
+      'currentTurnUid': firstAlive?.uid,
+      'turnDeadline': firstAlive == null ? null : _turnDeadlineFromNow(),
+    });
+    await batch.commit();
+  }
+
+  /// The current player records their one-word clue (writes their own doc).
+  Future<void> submitClue(String code, String uid, String clue) =>
+      _members(code).doc(uid).update({'clue': clue.trim()});
+
+  /// HOST ONLY. Moves the clue turn to the next living player in join order.
+  /// When the last player has gone, clears the turn (null) so the host can
+  /// open voting.
+  Future<void> advanceClueTurn(String code) async {
+    final roomSnap = await _room(code).get();
+    final room = OnlineRoom.fromDoc(roomSnap);
+    final membersSnap = await _members(code).get();
+    final ordered = membersSnap.docs.map(OnlineMember.fromDoc).toList()
+      ..sort(_byJoin);
+
+    final currentIdx =
+        ordered.indexWhere((m) => m.uid == room.currentTurnUid);
+    String? next;
+    for (var i = currentIdx + 1; i < ordered.length; i++) {
+      if (ordered[i].isAlive) {
+        next = ordered[i].uid;
+        break;
+      }
+    }
+
+    await _room(code).update({
+      'currentTurnUid': next,
+      'turnDeadline': next == null ? null : _turnDeadlineFromNow(),
+    });
+  }
 
   /// HOST ONLY. Opens voting and clears everyone's previous vote.
   Future<void> openVoting(String code) async {
@@ -263,20 +338,27 @@ class RoomRepository {
     await batch.commit();
   }
 
-  /// HOST ONLY. Starts the next clue round (roles persist).
+  /// HOST ONLY. Starts the next clue round (roles persist). Clears votes and
+  /// clues and points the turn at the first living player.
   Future<void> nextRound(String code) async {
     final roomSnap = await _room(code).get();
     final room = OnlineRoom.fromDoc(roomSnap);
-    final members = await _members(code).get();
+    final membersSnap = await _members(code).get();
+    final ordered = membersSnap.docs.map(OnlineMember.fromDoc).toList()
+      ..sort(_byJoin);
+    final firstAlive = ordered.where((m) => m.isAlive).firstOrNull;
+
     final batch = _db.batch();
-    for (final m in members.docs) {
-      batch.update(m.reference, {'voteTargetId': null});
+    for (final d in membersSnap.docs) {
+      batch.update(d.reference, {'voteTargetId': null, 'clue': null});
     }
     batch.update(_room(code), {
       'phase': GamePhase.clue.name,
       'roundNumber': room.roundNumber + 1,
       'lastEliminatedId': null,
       'lastEliminatedRole': null,
+      'currentTurnUid': firstAlive?.uid,
+      'turnDeadline': firstAlive == null ? null : _turnDeadlineFromNow(),
     });
     await batch.commit();
   }
