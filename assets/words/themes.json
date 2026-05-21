@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "themes": [
+    {
+      "id": "animals",
+      "name": "Animals",
+      "words": [
+        "Elephant", "Penguin", "Dolphin", "Kangaroo", "Giraffe", "Tiger", "Lion",
+        "Panda", "Koala", "Zebra", "Crocodile", "Octopus", "Eagle", "Owl",
+        "Rabbit", "Hedgehog", "Squirrel", "Wolf", "Fox", "Bear", "Camel",
+        "Cheetah", "Leopard", "Rhino", "Hippo", "Gorilla", "Chimpanzee", "Sloth",
+        "Otter", "Seal", "Whale", "Shark", "Jellyfish", "Starfish", "Crab",
+        "Lobster", "Frog", "Snake", "Lizard", "Turtle", "Peacock", "Flamingo",
+        "Ostrich", "Parrot", "Bat", "Raccoon", "Deer", "Moose", "Hamster", "Horse"
+      ]
+    },
+    {
+      "id": "food",
+      "name": "Food & Drink",
+      "words": [
+        "Pizza", "Sushi", "Pancake", "Burger", "Spaghetti", "Taco", "Burrito",
+        "Sandwich", "Hotdog", "Popcorn", "Donut", "Croissant", "Bagel", "Waffle",
+        "Cupcake", "Brownie", "Pretzel", "Lasagna", "Dumpling", "Noodles",
+        "Curry", "Ramen", "Steak", "Bacon", "Omelette", "Cereal", "Yogurt",
+        "Cheese", "Chocolate", "Icecream", "Smoothie", "Coffee", "Tea",
+        "Lemonade", "Milkshake", "Pineapple", "Watermelon", "Strawberry",
+        "Banana", "Mango", "Avocado", "Broccoli", "Carrot", "Potato", "Tomato",
+        "Pumpkin", "Honey", "Pancakes", "Muffin", "Pasta"
+      ]
+    },
+    {
+      "id": "movies",
+      "name": "Movies",
+      "words": [
+        "Titanic", "Avatar", "Frozen", "Joker", "Inception", "Gladiator",
+        "Jaws", "Shrek", "Up", "Coco", "Cars", "Moana", "Aladdin", "Tarzan",
+        "Matrix", "Terminator", "Rocky", "Twilight", "Casablanca", "Psycho",
+        "Alien", "Predator", "Godzilla", "Batman", "Superman", "Spiderman",
+        "Ironman", "Thor", "Hulk", "Deadpool", "Encanto", "Tangled",
+        "Dumbo", "Bambi", "Pinocchio", "Cinderella", "Mulan", "Brave",
+        "Ratatouille", "Wall-E", "Zootopia", "Soul", "Luca", "Onward",
+        "Avengers", "Interstellar", "Dunkirk", "Parasite", "Whiplash", "Amelie"
+      ]
+    },
+    {
+      "id": "sports",
+      "name": "Sports",
+      "words": [
+        "Soccer", "Basketball", "Tennis", "Cricket", "Baseball", "Golf",
+        "Boxing", "Swimming", "Cycling", "Running", "Skiing", "Snowboarding",
+        "Surfing", "Skateboarding", "Volleyball", "Badminton", "Hockey",
+        "Rugby", "Football", "Wrestling", "Karate", "Judo", "Fencing",
+        "Archery", "Rowing", "Sailing", "Diving", "Gymnastics", "Climbing",
+        "Bowling", "Darts", "Billiards", "Curling", "Polo", "Handball",
+        "Squash", "Marathon", "Triathlon", "Hurdles", "Javelin", "Discus",
+        "Weightlifting", "Kayaking", "Canoeing", "Paragliding", "Motocross",
+        "Racing", "Dodgeball", "Cheerleading", "Yoga"
+      ]
+    },
+    {
+      "id": "countries",
+      "name": "Countries",
+      "words": [
+        "India", "Japan", "Brazil", "Canada", "France", "Germany", "Italy",
+        "Spain", "Mexico", "Egypt", "Kenya", "Nigeria", "Russia", "China",
+        "Australia", "Argentina", "Norway", "Sweden", "Finland", "Iceland",
+        "Greece", "Turkey", "Thailand", "Vietnam", "Indonesia", "Malaysia",
+        "Singapore", "Portugal", "Ireland", "Scotland", "Poland", "Austria",
+        "Switzerland", "Netherlands", "Belgium", "Denmark", "Morocco",
+        "Peru", "Chile", "Colombia", "Cuba", "Jamaica", "Iran", "Iraq",
+        "Israel", "Nepal", "Pakistan", "Bangladesh", "Ukraine", "Hungary"
+      ]
+    },
+    {
+      "id": "jobs",
+      "name": "Jobs",
+      "words": [
+        "Doctor", "Teacher", "Engineer", "Pilot", "Chef", "Nurse", "Lawyer",
+        "Farmer", "Police", "Firefighter", "Astronaut", "Scientist", "Artist",
+        "Musician", "Dancer", "Actor", "Singer", "Writer", "Journalist",
+        "Photographer", "Architect", "Plumber", "Electrician", "Carpenter",
+        "Mechanic", "Dentist", "Surgeon", "Vet", "Barber", "Tailor", "Baker",
+        "Butcher", "Cashier", "Waiter", "Librarian", "Pharmacist", "Soldier",
+        "Sailor", "Detective", "Judge", "Accountant", "Banker", "Programmer",
+        "Designer", "Painter", "Plumber", "Gardener", "Fisherman", "Magician",
+        "Referee"
+      ]
+    },
+    {
+      "id": "household",
+      "name": "Household Items",
+      "words": [
+        "Toothbrush", "Pillow", "Blanket", "Mirror", "Lamp", "Clock", "Chair",
+        "Table", "Sofa", "Television", "Fridge", "Microwave", "Toaster",
+        "Kettle", "Blender", "Spoon", "Fork", "Knife", "Plate", "Cup", "Bowl",
+        "Bottle", "Towel", "Soap", "Shampoo", "Comb", "Scissors", "Umbrella",
+        "Broom", "Bucket", "Vacuum", "Iron", "Hairdryer", "Candle", "Curtain",
+        "Carpet", "Doormat", "Wallet", "Keys", "Remote", "Charger", "Battery",
+        "Notebook", "Pencil", "Eraser", "Stapler", "Calendar", "Backpack",
+        "Hanger", "Ladder"
+      ]
+    },
+    {
+      "id": "famous_people",
+      "name": "Famous People",
+      "words": [
+        "Einstein", "Newton", "Gandhi", "Mandela", "Lincoln", "Napoleon",
+        "Cleopatra", "Shakespeare", "Beethoven", "Mozart", "Picasso",
+        "DaVinci", "Darwin", "Tesla", "Edison", "Galileo", "Aristotle",
+        "Socrates", "Columbus", "Marco Polo", "Beyonce", "Madonna", "Eminem",
+        "Adele", "Drake", "Rihanna", "Messi", "Ronaldo", "Federer", "Jordan",
+        "Pele", "Maradona", "Bolt", "Phelps", "Serena", "Oprah", "Spielberg",
+        "Hitchcock", "Disney", "Jobs", "Gates", "Musk", "Bezos", "Zuckerberg",
+        "Churchill", "Roosevelt", "Kennedy", "Obama", "Curie", "Hawking"
+      ]
+    },
+    {
+      "id": "video_games",
+      "name": "Video Games",
+      "words": [
+        "Mario", "Zelda", "Tetris", "Pacman", "Pokemon", "Minecraft", "Fortnite",
+        "Roblox", "Sonic", "Pong", "Kirby", "Metroid", "Halo", "Doom",
+        "Portal", "Skyrim", "Fallout", "Overwatch", "Valorant", "Among Us",
+        "Terraria", "Stardew", "Witcher", "Cyberpunk", "Tekken", "Streetfighter",
+        "Mortal Kombat", "Pubg", "Crossy Road", "Candy Crush", "Angry Birds",
+        "Subway Surfers", "Temple Run", "Clash Royale", "Hearthstone",
+        "Starcraft", "Warcraft", "Diablo", "Bioshock", "Borderlands",
+        "Splatoon", "Pikmin", "Donkey Kong", "Bomberman", "Galaga", "Asteroids",
+        "Frogger", "Centipede", "Spaceinvaders", "Rocket League"
+      ]
+    },
+    {
+      "id": "nature",
+      "name": "Nature",
+      "words": [
+        "Mountain", "River", "Ocean", "Forest", "Desert", "Volcano", "Waterfall",
+        "Glacier", "Canyon", "Cave", "Island", "Beach", "Valley", "Meadow",
+        "Jungle", "Swamp", "Lake", "Pond", "Rainbow", "Lightning", "Thunder",
+        "Tornado", "Hurricane", "Earthquake", "Sunset", "Sunrise", "Cloud",
+        "Snow", "Rain", "Wind", "Fog", "Dew", "Storm", "Cliff", "Reef",
+        "Tree", "Flower", "Cactus", "Mushroom", "Leaf", "Seashell", "Coral",
+        "Iceberg", "Geyser", "Meteor", "Comet", "Star", "Moon", "Planet", "Galaxy"
+      ]
+    }
+  ]
+}

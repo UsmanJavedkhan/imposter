@@ -1,0 +1,66 @@
+rules_version = '2';
+
+// Security rules for the Imposter game (host-authoritative, free Spark plan).
+//
+// Key idea: the secret WORD is never stored anywhere an imposter can read it,
+// and each player's ROLE lives in rooms/{code}/private/{uid} which ONLY that
+// player can read. The host (who set up the game) is allowed to write those
+// private docs because the host's device assigns the roles.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function roomData(code) {
+      return get(/databases/$(database)/documents/rooms/$(code)).data;
+    }
+
+    function isHost(code) {
+      return isSignedIn() && roomData(code).hostId == request.auth.uid;
+    }
+
+    function isMember(code) {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/rooms/$(code)/members/$(request.auth.uid));
+    }
+
+    match /rooms/{code} {
+      // Any signed-in user can read a room (needed to join / watch the lobby).
+      // The secret word is NOT kept here, so this is safe.
+      allow read: if isSignedIn();
+
+      // When creating a room you must mark yourself as the host.
+      allow create: if isSignedIn()
+        && request.resource.data.hostId == request.auth.uid;
+
+      // Only the host advances the game (phase changes, elimination, etc.).
+      allow update, delete: if isHost(code);
+
+      // Public-ish player info: name, alive/connected status, current vote.
+      match /members/{uid} {
+        allow read: if isMember(code) || isHost(code);
+
+        // You may create/update your OWN member doc (join, vote, presence).
+        // The host may also update members (mark eliminated, clear votes).
+        allow create: if isSignedIn() && uid == request.auth.uid;
+        allow update: if (isSignedIn() && uid == request.auth.uid) || isHost(code);
+        allow delete: if (isSignedIn() && uid == request.auth.uid) || isHost(code);
+      }
+
+      // Secret per-player role + word. Readable ONLY by its owner.
+      match /private/{uid} {
+        allow read: if isSignedIn() && uid == request.auth.uid;
+        // Only the host writes these (role assignment happens on host device).
+        allow write: if isHost(code);
+      }
+
+      // Host-only scratch space (the full role map + secret word) so the host
+      // can detect winners. No other player can read this.
+      match /secret/{doc} {
+        allow read, write: if isHost(code);
+      }
+    }
+  }
+}
