@@ -26,6 +26,25 @@ service cloud.firestore {
         exists(/databases/$(database)/documents/rooms/$(code)/members/$(request.auth.uid));
     }
 
+    // True when the room's current host has no member doc, or their doc is
+    // marked disconnected — i.e. they have left and the game would stall.
+    function currentHostAbsent(code) {
+      return
+        !exists(/databases/$(database)/documents/rooms/$(code)/members/$(resource.data.hostId))
+        || get(/databases/$(database)/documents/rooms/$(code)/members/$(resource.data.hostId)).data.isConnected == false;
+    }
+
+    // A member may take over as host ONLY when the old host is absent, and the
+    // write changes nothing but the hostId (set to themselves). This lets the
+    // game continue and resolves concurrent claims (the 2nd write sees a
+    // present host and is rejected).
+    function isClaimingHost(code) {
+      return isMember(code)
+        && request.resource.data.hostId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hostId'])
+        && currentHostAbsent(code);
+    }
+
     match /rooms/{code} {
       // Any signed-in user can read a room (needed to join / watch the lobby).
       // The secret word is NOT kept here, so this is safe.
@@ -36,7 +55,9 @@ service cloud.firestore {
         && request.resource.data.hostId == request.auth.uid;
 
       // Only the host advances the game (phase changes, elimination, etc.).
-      allow update, delete: if isHost(code);
+      // A member may also claim host when the old host is absent (migration).
+      allow update: if isHost(code) || isClaimingHost(code);
+      allow delete: if isHost(code);
 
       // Public-ish player info: name, alive/connected status, current vote.
       match /members/{uid} {

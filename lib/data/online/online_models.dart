@@ -147,11 +147,13 @@ class OnlineMember {
 class MyRole {
   final Role role;
   final String? secretWord; // null for imposters
+  final String? hint; // starting hint for imposters; null for civilians
   final String themeName;
 
   const MyRole({
     required this.role,
     required this.secretWord,
+    required this.hint,
     required this.themeName,
   });
 
@@ -162,6 +164,7 @@ class MyRole {
     return MyRole(
       role: _roleFromString(d['role'] as String?) ?? Role.civilian,
       secretWord: d['secretWord'] as String?,
+      hint: d['hint'] as String?,
       themeName: d['themeName'] as String? ?? '',
     );
   }

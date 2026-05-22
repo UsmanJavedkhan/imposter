@@ -4,17 +4,50 @@ import 'package:flutter/services.dart';
 
 import '../../../application/game_providers.dart';
 import '../../../application/online_providers.dart';
+import '../../../application/presence.dart';
 import '../../../domain/engine/imposter_rules.dart';
 import '../../widgets/gradient_background.dart';
 import 'online_game_screen.dart';
 
 /// Waiting room. Shows the code and members; the host starts the game.
-class LobbyScreen extends ConsumerWidget {
+class LobbyScreen extends ConsumerStatefulWidget {
   const LobbyScreen({super.key, required this.code});
   final String code;
 
-  Future<void> _start(BuildContext context, WidgetRef ref, int playerCount,
-      String themeName, int imposterCount) async {
+  @override
+  ConsumerState<LobbyScreen> createState() => _LobbyScreenState();
+}
+
+class _LobbyScreenState extends ConsumerState<LobbyScreen>
+    with WidgetsBindingObserver, RoomPresenceMixin {
+  @override
+  String get roomCode => widget.code;
+
+  @override
+  void initState() {
+    super.initState();
+    startPresence();
+  }
+
+  @override
+  void dispose() {
+    stopPresence();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) =>
+      handleLifecycle(state);
+
+  Future<void> _leave() async {
+    final uid = ref.read(authUidProvider).value;
+    if (uid != null) {
+      await ref.read(roomRepositoryProvider).leave(widget.code, uid);
+    }
+    if (mounted) Navigator.of(context).popUntil((r) => r.isFirst);
+  }
+
+  Future<void> _start(int playerCount, String themeName, int imposterCount) async {
     if (playerCount < kMinPlayers) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Need at least $kMinPlayers players.')),
@@ -34,16 +67,19 @@ class LobbyScreen extends ConsumerWidget {
       final theme = themes.firstWhere((t) => t.name == themeName,
           orElse: () => themes.first);
       final word = ref.read(wordRepositoryProvider).randomWord(theme);
-      await ref.read(roomRepositoryProvider).startGame(code: code, secretWord: word);
+      await ref
+          .read(roomRepositoryProvider)
+          .startGame(code: widget.code, secretWord: word);
     } catch (e) {
-      if (!context.mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Failed to start: $e')));
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final code = widget.code;
     final roomAsync = ref.watch(roomStreamProvider(code));
     final membersAsync = ref.watch(membersStreamProvider(code));
     final uid = ref.watch(authUidProvider).value;
@@ -59,13 +95,24 @@ class LobbyScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Lobby')),
+      appBar: AppBar(
+        title: const Text('Lobby'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Leave room',
+            onPressed: _leave,
+          ),
+        ],
+      ),
       body: GradientBackground(
         child: SafeArea(
           child: roomAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, _) => Center(child: Text('Error: $e')),
             data: (room) {
+              // Promote a new host if the original one left the lobby.
+              maybeMigrateHost(room, membersAsync.value ?? const []);
               final isHost = room.hostId == uid;
               return Padding(
                 padding: const EdgeInsets.all(20),
@@ -116,7 +163,7 @@ class LobbyScreen extends ConsumerWidget {
                                         ? m.name[0].toUpperCase()
                                         : '?')),
                                 title: Text(m.name),
-                                trailing: m.isHost
+                                trailing: m.uid == room.hostId
                                     ? const Chip(label: Text('Host'))
                                     : (m.isConnected
                                         ? null
@@ -136,8 +183,6 @@ class LobbyScreen extends ConsumerWidget {
                           icon: const Icon(Icons.play_arrow),
                           label: const Text('Start Game'),
                           onPressed: () => _start(
-                            context,
-                            ref,
                             membersAsync.value?.length ?? 0,
                             room.themeName,
                             room.imposterCount,

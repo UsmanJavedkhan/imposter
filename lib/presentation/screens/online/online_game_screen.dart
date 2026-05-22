@@ -4,19 +4,68 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../application/online_providers.dart';
+import '../../../application/presence.dart';
 import '../../../data/online/online_models.dart';
 import '../../../domain/models/enums.dart';
 import '../../widgets/gradient_background.dart';
+import '../../widgets/hint_chip.dart';
 
 /// The synced online game. Every device watches the same Firestore room and
 /// renders the view for the current phase. Only the host sees "advance"
 /// buttons; everyone else sees a waiting message.
-class OnlineGameScreen extends ConsumerWidget {
+class OnlineGameScreen extends ConsumerStatefulWidget {
   const OnlineGameScreen({super.key, required this.code});
   final String code;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<OnlineGameScreen> createState() => _OnlineGameScreenState();
+}
+
+class _OnlineGameScreenState extends ConsumerState<OnlineGameScreen>
+    with WidgetsBindingObserver, RoomPresenceMixin {
+  @override
+  String get roomCode => widget.code;
+
+  @override
+  void initState() {
+    super.initState();
+    startPresence();
+  }
+
+  @override
+  void dispose() {
+    stopPresence();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) =>
+      handleLifecycle(state);
+
+  Future<void> _confirmLeave() async {
+    final leave = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Leave game?'),
+        content: const Text('You will drop out of this round.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Stay')),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Leave')),
+        ],
+      ),
+    );
+    if (leave == true && mounted) {
+      Navigator.of(context).popUntil((r) => r.isFirst);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final code = widget.code;
     final roomAsync = ref.watch(roomStreamProvider(code));
     final membersAsync = ref.watch(membersStreamProvider(code));
     final uid = ref.watch(authUidProvider).value;
@@ -26,6 +75,13 @@ class OnlineGameScreen extends ConsumerWidget {
         title: const Text('Imposter — Online'),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Leave game',
+            onPressed: _confirmLeave,
+          ),
+        ],
       ),
       extendBodyBehindAppBar: true,
       body: GradientBackground(
@@ -35,6 +91,8 @@ class OnlineGameScreen extends ConsumerWidget {
             error: (e, _) => Center(child: Text('Error: $e')),
             data: (room) {
               final members = membersAsync.value ?? const [];
+              // Keep a host alive even if the original one disappears.
+              maybeMigrateHost(room, members);
               final isHost = room.hostId == uid;
               switch (room.phase) {
                 case GamePhase.roleReveal:
@@ -148,6 +206,8 @@ class _RoleRevealOnline extends ConsumerWidget {
                         const SizedBox(height: 12),
                         Text('Theme: ${role.themeName}',
                             style: Theme.of(context).textTheme.titleLarge),
+                        const SizedBox(height: 12),
+                        HintChip(text: role.hint ?? ''),
                         const SizedBox(height: 8),
                         const Text('Blend in — you do NOT know the word.',
                             textAlign: TextAlign.center),

@@ -7,7 +7,9 @@ import '../../application/game_providers.dart';
 import '../../domain/models/enums.dart';
 import '../../domain/models/game_state.dart';
 import '../../domain/models/player.dart';
+import '../../domain/word_hint.dart';
 import '../widgets/gradient_background.dart';
+import '../widgets/hint_chip.dart';
 
 /// Shows the right view for the current game phase. Because the engine drives
 /// [GamePhase], this single screen handles the whole play loop.
@@ -256,6 +258,8 @@ class _RoleCardState extends State<_RoleCard>
             const SizedBox(height: 16),
             Text('Theme: ${widget.themeName}',
                 style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 12),
+            HintChip(text: buildImposterHint(widget.secretWord)),
             const SizedBox(height: 8),
             const Text('Blend in — you do NOT know the word.',
                 textAlign: TextAlign.center),

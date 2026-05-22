@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../domain/models/enums.dart';
+import '../../domain/word_hint.dart';
 import 'online_models.dart';
 
 /// Talks to Firestore for everything online. Host-authoritative: the host's
@@ -142,13 +143,30 @@ class RoomRepository {
   }
 
   /// Mark presence (called on connect/disconnect-ish lifecycle changes).
-  Future<void> setConnected(String code, String uid, bool connected) =>
-      _members(code).doc(uid).update({'isConnected': connected});
+  /// Uses set-with-merge so it still works right after a rejoin. Best-effort:
+  /// a hard kill / closed tab may not fire, which is why host migration also
+  /// keys off this flag.
+  Future<void> setConnected(String code, String uid, bool connected) async {
+    try {
+      await _members(code).doc(uid).set(
+        {'isConnected': connected},
+        SetOptions(merge: true),
+      );
+    } catch (_) {
+      // Member doc may be gone (already left) — ignore.
+    }
+  }
 
   /// A player leaves the lobby (only deletes their own member doc).
   Future<void> leave(String code, String uid) async {
     await _members(code).doc(uid).delete();
   }
+
+  /// Promotes [uid] to host. Used for host migration when the original host
+  /// has disconnected/left. Firestore rules only allow this when the current
+  /// host is genuinely absent, so concurrent claims resolve to a single host.
+  Future<void> claimHost(String code, String uid) =>
+      _room(code).update({'hostId': uid});
 
   // ---- Host: start the game ------------------------------------------------
 
@@ -178,6 +196,8 @@ class RoomRepository {
         'role': role.name,
         // Only civilians get the word; imposters never receive it.
         'secretWord': isImposter ? null : secretWord,
+        // Imposters get a starting hint derived from the word instead.
+        'hint': isImposter ? buildImposterHint(secretWord) : null,
         'themeName': room.themeName,
       });
     }
