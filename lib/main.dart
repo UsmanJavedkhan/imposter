@@ -33,6 +33,12 @@ class ImposterApp extends StatelessWidget {
       title: 'Imposter',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
+      // Dark canvas behind everything so transparent scaffolds (used so the
+      // gradient can show) never fall through to a white page.
+      builder: (context, child) => ColoredBox(
+        color: AppColors.bgTop,
+        child: child ?? const SizedBox.shrink(),
+      ),
       home: const HomeScreen(),
     );
   }
