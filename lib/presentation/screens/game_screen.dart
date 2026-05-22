@@ -38,8 +38,12 @@ class GameScreen extends ConsumerWidget {
         const Scaffold(body: Center(child: Text('Setting up…'))),
     };
 
-    return PhaseSwitcher(
-      child: KeyedSubtree(key: ValueKey(game.phase), child: view),
+    // The phase Scaffolds are transparent, so a single gradient sits behind
+    // the whole local game flow.
+    return GradientBackground(
+      child: PhaseSwitcher(
+        child: KeyedSubtree(key: ValueKey(game.phase), child: view),
+      ),
     );
   }
 }
