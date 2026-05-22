@@ -15,6 +15,20 @@ class AppColors {
   static const Color civilian = Color(0xFF34E0A1); // mint
   static const Color amberHint = Color(0xFFFFC857);
 
+  // Brand wordmark gradient (pink → magenta) and section-label pink.
+  static const Color magentaA = Color(0xFFFF5BA6);
+  static const Color magentaB = Color(0xFFB15CFF);
+  static const List<Color> brandGradient = [magentaA, magentaB];
+  static const Color labelPink = Color(0xFFE869BE);
+
+  // Light "lavender" fill used for primary CTAs, with dark text on top.
+  static const Color lavender = Color(0xFFE9D5FF);
+  static const Color onLavender = Color(0xFF2A1248);
+
+  // Card surfaces.
+  static Color cardFill = Colors.white.withValues(alpha: 0.05);
+  static Color cardBorder = Colors.white.withValues(alpha: 0.09);
+
   // Background gradient stops (dark).
   static const Color bgTop = Color(0xFF120A2E);
   static const Color bgMid = Color(0xFF2A1A66);

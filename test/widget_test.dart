@@ -10,7 +10,8 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text('IMPOSTER'), findsOneWidget);
+    // The wordmark appears in both the app bar and the hero.
+    expect(find.text('IMPOSTER'), findsWidgets);
     expect(find.text('Play Local'), findsOneWidget);
   });
 }
