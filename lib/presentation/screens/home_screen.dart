@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/gradient_background.dart';
+import '../widgets/pressable_scale.dart';
 import 'online/online_menu_screen.dart';
 import 'setup_screen.dart';
 
@@ -32,38 +33,42 @@ class HomeScreen extends StatelessWidget {
                     style: textTheme.titleMedium
                         ?.copyWith(color: Colors.white70)),
                 const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      textStyle: textTheme.titleLarge,
+                PressableScale(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        textStyle: textTheme.titleLarge,
+                      ),
+                      icon: const Icon(Icons.group),
+                      label: const Text('Play Local'),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const SetupScreen()),
+                        );
+                      },
                     ),
-                    icon: const Icon(Icons.group),
-                    label: const Text('Play Local'),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const SetupScreen()),
-                      );
-                    },
                   ),
                 ),
                 const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.tonalIcon(
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      textStyle: textTheme.titleLarge,
+                PressableScale(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.tonalIcon(
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        textStyle: textTheme.titleLarge,
+                      ),
+                      icon: const Icon(Icons.wifi),
+                      label: const Text('Play Online'),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const OnlineMenuScreen()),
+                        );
+                      },
                     ),
-                    icon: const Icon(Icons.wifi),
-                    label: const Text('Play Online'),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => const OnlineMenuScreen()),
-                      );
-                    },
                   ),
                 ),
                 const SizedBox(height: 12),

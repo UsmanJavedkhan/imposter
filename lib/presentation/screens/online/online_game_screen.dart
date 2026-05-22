@@ -7,8 +7,12 @@ import '../../../application/online_providers.dart';
 import '../../../application/presence.dart';
 import '../../../data/online/online_models.dart';
 import '../../../domain/models/enums.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/flip_card.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/hint_chip.dart';
+import '../../widgets/phase_switcher.dart';
+import '../../widgets/win_confetti.dart';
 
 /// The synced online game. Every device watches the same Firestore room and
 /// renders the view for the current phase. Only the host sees "advance"
@@ -94,27 +98,27 @@ class _OnlineGameScreenState extends ConsumerState<OnlineGameScreen>
               // Keep a host alive even if the original one disappears.
               maybeMigrateHost(room, members);
               final isHost = room.hostId == uid;
-              switch (room.phase) {
-                case GamePhase.roleReveal:
-                  return _RoleRevealOnline(code: code, isHost: isHost);
-                case GamePhase.clue:
-                  return _CluePhaseOnline(
-                      code: code,
-                      room: room,
-                      members: members,
-                      uid: uid,
-                      isHost: isHost);
-                case GamePhase.voting:
-                  return _VotingOnline(
-                      code: code, members: members, uid: uid, isHost: isHost);
-                case GamePhase.reveal:
-                  return _RevealOnline(
-                      room: room, members: members, isHost: isHost, code: code);
-                case GamePhase.gameOver:
-                  return _GameOverOnline(room: room, members: members);
-                case GamePhase.lobby:
-                  return const Center(child: CircularProgressIndicator());
-              }
+              final Widget view = switch (room.phase) {
+                GamePhase.roleReveal =>
+                  _RoleRevealOnline(code: code, isHost: isHost),
+                GamePhase.clue => _CluePhaseOnline(
+                    code: code,
+                    room: room,
+                    members: members,
+                    uid: uid,
+                    isHost: isHost),
+                GamePhase.voting => _VotingOnline(
+                    code: code, members: members, uid: uid, isHost: isHost),
+                GamePhase.reveal => _RevealOnline(
+                    room: room, members: members, isHost: isHost, code: code),
+                GamePhase.gameOver =>
+                  _GameOverOnline(room: room, members: members),
+                GamePhase.lobby =>
+                  const Center(child: CircularProgressIndicator()),
+              };
+              return PhaseSwitcher(
+                child: KeyedSubtree(key: ValueKey(room.phase), child: view),
+              );
             },
           ),
         ),
@@ -187,42 +191,57 @@ class _RoleRevealOnline extends ConsumerWidget {
                   return const CircularProgressIndicator();
                 }
                 final imposter = role.isImposter;
+                final accent =
+                    imposter ? AppColors.imposter : AppColors.civilian;
                 return Padding(
                   padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        imposter ? Icons.theater_comedy : Icons.verified_user,
-                        size: 88,
-                        color: imposter ? Colors.redAccent : Colors.greenAccent,
-                      ),
-                      const SizedBox(height: 16),
-                      if (imposter) ...[
-                        const Text('YOU ARE THE IMPOSTER',
-                            style: TextStyle(
-                                fontSize: 26, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center),
-                        const SizedBox(height: 12),
-                        Text('Theme: ${role.themeName}',
-                            style: Theme.of(context).textTheme.titleLarge),
-                        const SizedBox(height: 12),
-                        HintChip(text: role.hint ?? ''),
-                        const SizedBox(height: 8),
-                        const Text('Blend in — you do NOT know the word.',
-                            textAlign: TextAlign.center),
-                      ] else ...[
-                        const Text('The secret word is'),
-                        const SizedBox(height: 8),
-                        Text(role.secretWord ?? '',
-                            style: const TextStyle(
-                                fontSize: 32, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center),
-                        const SizedBox(height: 12),
-                        Text('Theme: ${role.themeName}',
-                            style: Theme.of(context).textTheme.titleMedium),
+                  child: FlipCard(
+                    frontColor: accent.withValues(alpha: 0.12),
+                    back: const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.visibility,
+                            size: 64, color: Colors.white70),
+                        SizedBox(height: 16),
+                        Text('Tap to reveal your role',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 18)),
                       ],
-                    ],
+                    ),
+                    front: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          imposter
+                              ? Icons.theater_comedy
+                              : Icons.verified_user,
+                          size: 72,
+                          color: accent,
+                        ),
+                        const SizedBox(height: 12),
+                        if (imposter) ...[
+                          const Text('YOU ARE THE\nIMPOSTER',
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center),
+                          const SizedBox(height: 10),
+                          Text('Theme: ${role.themeName}',
+                              style: Theme.of(context).textTheme.titleMedium),
+                          const SizedBox(height: 12),
+                          HintChip(text: role.hint ?? ''),
+                        ] else ...[
+                          const Text('The secret word is'),
+                          const SizedBox(height: 8),
+                          Text(role.secretWord ?? '',
+                              style: const TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center),
+                          const SizedBox(height: 10),
+                          Text('Theme: ${role.themeName}',
+                              style: Theme.of(context).textTheme.titleMedium),
+                        ],
+                      ],
+                    ),
                   ),
                 );
               },
@@ -664,7 +683,11 @@ class _GameOverOnline extends StatelessWidget {
     final civiliansWon = room.winner == Role.civilian;
     final nameById = {for (final m in members) m.uid: m.name};
 
-    return Center(
+    return WinConfetti(
+      colors: civiliansWon
+          ? const [AppColors.civilian, AppColors.cyan, Colors.white]
+          : const [AppColors.imposter, AppColors.amberHint, Colors.white],
+      child: Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -722,6 +745,7 @@ class _GameOverOnline extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

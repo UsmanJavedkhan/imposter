@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'firebase_web_options.dart';
 import 'presentation/screens/home_screen.dart';
+import 'presentation/theme/app_theme.dart';
 
 Future<void> main() async {
   // Required before any async work in main().
@@ -31,13 +32,7 @@ class ImposterApp extends StatelessWidget {
     return MaterialApp(
       title: 'Imposter',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF6C4DF6),
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-      ),
+      theme: buildAppTheme(),
       home: const HomeScreen(),
     );
   }

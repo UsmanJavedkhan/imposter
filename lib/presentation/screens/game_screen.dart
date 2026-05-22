@@ -8,8 +8,11 @@ import '../../domain/models/enums.dart';
 import '../../domain/models/game_state.dart';
 import '../../domain/models/player.dart';
 import '../../domain/word_hint.dart';
+import '../theme/app_theme.dart';
 import '../widgets/gradient_background.dart';
 import '../widgets/hint_chip.dart';
+import '../widgets/phase_switcher.dart';
+import '../widgets/win_confetti.dart';
 
 /// Shows the right view for the current game phase. Because the engine drives
 /// [GamePhase], this single screen handles the whole play loop.
@@ -25,19 +28,19 @@ class GameScreen extends ConsumerWidget {
       return const Scaffold(body: Center(child: Text('No game in progress.')));
     }
 
-    switch (game.phase) {
-      case GamePhase.roleReveal:
-        return _RoleRevealView(game: game, revealIndex: session.revealIndex);
-      case GamePhase.clue:
-        return _ClueView(game: game);
-      case GamePhase.voting:
-        return _VotingView(game: game);
-      case GamePhase.reveal:
-      case GamePhase.gameOver:
-        return _ResultView(game: game);
-      case GamePhase.lobby:
-        return const Scaffold(body: Center(child: Text('Setting up…')));
-    }
+    final Widget view = switch (game.phase) {
+      GamePhase.roleReveal =>
+        _RoleRevealView(game: game, revealIndex: session.revealIndex),
+      GamePhase.clue => _ClueView(game: game),
+      GamePhase.voting => _VotingView(game: game),
+      GamePhase.reveal || GamePhase.gameOver => _ResultView(game: game),
+      GamePhase.lobby =>
+        const Scaffold(body: Center(child: Text('Setting up…'))),
+    };
+
+    return PhaseSwitcher(
+      child: KeyedSubtree(key: ValueKey(game.phase), child: view),
+    );
   }
 }
 
@@ -93,6 +96,7 @@ class _RoleRevealView extends ConsumerWidget {
       player: player,
       themeName: game.config.themeName,
       secretWord: game.secretWord,
+      secretHint: game.secretHint,
       onDone: controller.nextReveal,
     );
   }
@@ -106,12 +110,14 @@ class _RoleCard extends StatefulWidget {
     required this.player,
     required this.themeName,
     required this.secretWord,
+    required this.secretHint,
     required this.onDone,
   });
 
   final Player player;
   final String themeName;
   final String secretWord;
+  final String secretHint;
   final VoidCallback onDone;
 
   @override
@@ -147,10 +153,10 @@ class _RoleCardState extends State<_RoleCard>
       builder: (context, _) {
         final showFront = _flip.value > 0.5;
         final List<Color> bg = !showFront
-            ? const [Color(0xFF1A1033), Color(0xFF2A1A5E), Color(0xFF3A1C71)]
+            ? AppColors.background
             : (isImposter
-                ? const [Color(0xFF3A0D0D), Color(0xFF5E1A1A), Color(0xFF7A1C1C)]
-                : const [Color(0xFF0D2E1A), Color(0xFF14512A), Color(0xFF1C7137)]);
+                ? AppColors.imposterBackground
+                : AppColors.civilianBackground);
 
         return Scaffold(
           appBar: AppBar(
@@ -259,7 +265,11 @@ class _RoleCardState extends State<_RoleCard>
             Text('Theme: ${widget.themeName}',
                 style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
-            HintChip(text: buildImposterHint(widget.secretWord)),
+            HintChip(
+              text: widget.secretHint.isNotEmpty
+                  ? widget.secretHint
+                  : buildImposterHint(widget.secretWord),
+            ),
             const SizedBox(height: 8),
             const Text('Blend in — you do NOT know the word.',
                 textAlign: TextAlign.center),
@@ -440,7 +450,7 @@ class _ResultView extends ConsumerWidget {
     final isOver = game.isGameOver;
     final civiliansWon = game.winner == Role.civilian;
 
-    return Scaffold(
+    final scaffold = Scaffold(
       appBar: AppBar(
         title: Text(isOver ? 'Game Over' : 'Vote Result'),
         automaticallyImplyLeading: false,
@@ -501,6 +511,14 @@ class _ResultView extends ConsumerWidget {
           ),
         ),
       ),
+    );
+
+    if (!isOver) return scaffold;
+    return WinConfetti(
+      colors: civiliansWon
+          ? const [AppColors.civilian, AppColors.cyan, Colors.white]
+          : const [AppColors.imposter, AppColors.amberHint, Colors.white],
+      child: scaffold,
     );
   }
 }
