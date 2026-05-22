@@ -15,6 +15,10 @@ class GameState {
   /// The word civilians can see. Imposters must not be shown this.
   final String secretWord;
 
+  /// A related-word hint shown to the imposter (e.g. "Water" for "Soap").
+  /// Empty when the chosen word has no curated hint.
+  final String secretHint;
+
   final GamePhase phase;
 
   /// 1-based round counter (a "round" = one clue + vote cycle).
@@ -33,6 +37,7 @@ class GameState {
     required this.config,
     required this.players,
     required this.secretWord,
+    this.secretHint = '',
     required this.phase,
     this.roundNumber = 1,
     this.currentTurnIndex = 0,
@@ -65,6 +70,7 @@ class GameState {
     GameConfig? config,
     List<Player>? players,
     String? secretWord,
+    String? secretHint,
     GamePhase? phase,
     int? roundNumber,
     int? currentTurnIndex,
@@ -77,6 +83,7 @@ class GameState {
       config: config ?? this.config,
       players: players ?? this.players,
       secretWord: secretWord ?? this.secretWord,
+      secretHint: secretHint ?? this.secretHint,
       phase: phase ?? this.phase,
       roundNumber: roundNumber ?? this.roundNumber,
       currentTurnIndex: currentTurnIndex ?? this.currentTurnIndex,

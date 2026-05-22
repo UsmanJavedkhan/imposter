@@ -67,9 +67,11 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen>
       final theme = themes.firstWhere((t) => t.name == themeName,
           orElse: () => themes.first);
       final word = ref.read(wordRepositoryProvider).randomWord(theme);
-      await ref
-          .read(roomRepositoryProvider)
-          .startGame(code: widget.code, secretWord: word);
+      await ref.read(roomRepositoryProvider).startGame(
+            code: widget.code,
+            secretWord: word,
+            hintWord: theme.hintFor(word),
+          );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context)

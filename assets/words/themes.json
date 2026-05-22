@@ -1,145 +1,2064 @@
 {
-  "version": 1,
+  "version": 2,
   "themes": [
     {
       "id": "animals",
       "name": "Animals",
       "words": [
-        "Elephant", "Penguin", "Dolphin", "Kangaroo", "Giraffe", "Tiger", "Lion",
-        "Panda", "Koala", "Zebra", "Crocodile", "Octopus", "Eagle", "Owl",
-        "Rabbit", "Hedgehog", "Squirrel", "Wolf", "Fox", "Bear", "Camel",
-        "Cheetah", "Leopard", "Rhino", "Hippo", "Gorilla", "Chimpanzee", "Sloth",
-        "Otter", "Seal", "Whale", "Shark", "Jellyfish", "Starfish", "Crab",
-        "Lobster", "Frog", "Snake", "Lizard", "Turtle", "Peacock", "Flamingo",
-        "Ostrich", "Parrot", "Bat", "Raccoon", "Deer", "Moose", "Hamster", "Horse"
+        {
+          "word": "Elephant",
+          "hint": "Trunk"
+        },
+        {
+          "word": "Penguin",
+          "hint": "Antarctica"
+        },
+        {
+          "word": "Dolphin",
+          "hint": "Ocean"
+        },
+        {
+          "word": "Kangaroo",
+          "hint": "Australia"
+        },
+        {
+          "word": "Giraffe",
+          "hint": "Neck"
+        },
+        {
+          "word": "Tiger",
+          "hint": "Stripes"
+        },
+        {
+          "word": "Lion",
+          "hint": "Jungle"
+        },
+        {
+          "word": "Panda",
+          "hint": "Bamboo"
+        },
+        {
+          "word": "Koala",
+          "hint": "Eucalyptus"
+        },
+        {
+          "word": "Zebra",
+          "hint": "Savanna"
+        },
+        {
+          "word": "Crocodile",
+          "hint": "Swamp"
+        },
+        {
+          "word": "Octopus",
+          "hint": "Tentacles"
+        },
+        {
+          "word": "Eagle",
+          "hint": "Sky"
+        },
+        {
+          "word": "Owl",
+          "hint": "Night"
+        },
+        {
+          "word": "Rabbit",
+          "hint": "Carrot"
+        },
+        {
+          "word": "Hedgehog",
+          "hint": "Spikes"
+        },
+        {
+          "word": "Squirrel",
+          "hint": "Acorn"
+        },
+        {
+          "word": "Wolf",
+          "hint": "Pack"
+        },
+        {
+          "word": "Fox",
+          "hint": "Cunning"
+        },
+        {
+          "word": "Bear",
+          "hint": "Cave"
+        },
+        {
+          "word": "Camel",
+          "hint": "Desert"
+        },
+        {
+          "word": "Cheetah",
+          "hint": "Speed"
+        },
+        {
+          "word": "Leopard",
+          "hint": "Spots"
+        },
+        {
+          "word": "Rhino",
+          "hint": "Horn"
+        },
+        {
+          "word": "Hippo",
+          "hint": "River"
+        },
+        {
+          "word": "Gorilla",
+          "hint": "Jungle"
+        },
+        {
+          "word": "Chimpanzee",
+          "hint": "Banana"
+        },
+        {
+          "word": "Sloth",
+          "hint": "Slow"
+        },
+        {
+          "word": "Otter",
+          "hint": "River"
+        },
+        {
+          "word": "Seal",
+          "hint": "Beach"
+        },
+        {
+          "word": "Whale",
+          "hint": "Ocean"
+        },
+        {
+          "word": "Shark",
+          "hint": "Teeth"
+        },
+        {
+          "word": "Jellyfish",
+          "hint": "Sting"
+        },
+        {
+          "word": "Starfish",
+          "hint": "Ocean"
+        },
+        {
+          "word": "Crab",
+          "hint": "Claws"
+        },
+        {
+          "word": "Lobster",
+          "hint": "Claws"
+        },
+        {
+          "word": "Frog",
+          "hint": "Pond"
+        },
+        {
+          "word": "Snake",
+          "hint": "Venom"
+        },
+        {
+          "word": "Lizard",
+          "hint": "Reptile"
+        },
+        {
+          "word": "Turtle",
+          "hint": "Shell"
+        },
+        {
+          "word": "Peacock",
+          "hint": "Feathers"
+        },
+        {
+          "word": "Flamingo",
+          "hint": "Pink"
+        },
+        {
+          "word": "Ostrich",
+          "hint": "Egg"
+        },
+        {
+          "word": "Parrot",
+          "hint": "Talk"
+        },
+        {
+          "word": "Bat",
+          "hint": "Cave"
+        },
+        {
+          "word": "Raccoon",
+          "hint": "Trash"
+        },
+        {
+          "word": "Deer",
+          "hint": "Antlers"
+        },
+        {
+          "word": "Moose",
+          "hint": "Antlers"
+        },
+        {
+          "word": "Hamster",
+          "hint": "Wheel"
+        },
+        {
+          "word": "Horse",
+          "hint": "Saddle"
+        }
       ]
     },
     {
       "id": "food",
       "name": "Food & Drink",
       "words": [
-        "Pizza", "Sushi", "Pancake", "Burger", "Spaghetti", "Taco", "Burrito",
-        "Sandwich", "Hotdog", "Popcorn", "Donut", "Croissant", "Bagel", "Waffle",
-        "Cupcake", "Brownie", "Pretzel", "Lasagna", "Dumpling", "Noodles",
-        "Curry", "Ramen", "Steak", "Bacon", "Omelette", "Cereal", "Yogurt",
-        "Cheese", "Chocolate", "Icecream", "Smoothie", "Coffee", "Tea",
-        "Lemonade", "Milkshake", "Pineapple", "Watermelon", "Strawberry",
-        "Banana", "Mango", "Avocado", "Broccoli", "Carrot", "Potato", "Tomato",
-        "Pumpkin", "Honey", "Pancakes", "Muffin", "Pasta"
+        {
+          "word": "Pizza",
+          "hint": "Cheese"
+        },
+        {
+          "word": "Sushi",
+          "hint": "Rice"
+        },
+        {
+          "word": "Pancake",
+          "hint": "Syrup"
+        },
+        {
+          "word": "Burger",
+          "hint": "Beef"
+        },
+        {
+          "word": "Spaghetti",
+          "hint": "Sauce"
+        },
+        {
+          "word": "Taco",
+          "hint": "Shell"
+        },
+        {
+          "word": "Burrito",
+          "hint": "Wrap"
+        },
+        {
+          "word": "Sandwich",
+          "hint": "Bread"
+        },
+        {
+          "word": "Hotdog",
+          "hint": "Sausage"
+        },
+        {
+          "word": "Popcorn",
+          "hint": "Cinema"
+        },
+        {
+          "word": "Donut",
+          "hint": "Glaze"
+        },
+        {
+          "word": "Croissant",
+          "hint": "Butter"
+        },
+        {
+          "word": "Bagel",
+          "hint": "Cream"
+        },
+        {
+          "word": "Waffle",
+          "hint": "Grid"
+        },
+        {
+          "word": "Cupcake",
+          "hint": "Frosting"
+        },
+        {
+          "word": "Brownie",
+          "hint": "Chocolate"
+        },
+        {
+          "word": "Pretzel",
+          "hint": "Salt"
+        },
+        {
+          "word": "Lasagna",
+          "hint": "Layers"
+        },
+        {
+          "word": "Dumpling",
+          "hint": "Steam"
+        },
+        {
+          "word": "Noodles",
+          "hint": "Slurp"
+        },
+        {
+          "word": "Curry",
+          "hint": "Spice"
+        },
+        {
+          "word": "Ramen",
+          "hint": "Broth"
+        },
+        {
+          "word": "Steak",
+          "hint": "Grill"
+        },
+        {
+          "word": "Bacon",
+          "hint": "Crispy"
+        },
+        {
+          "word": "Omelette",
+          "hint": "Eggs"
+        },
+        {
+          "word": "Cereal",
+          "hint": "Milk"
+        },
+        {
+          "word": "Yogurt",
+          "hint": "Creamy"
+        },
+        {
+          "word": "Cheese",
+          "hint": "Dairy"
+        },
+        {
+          "word": "Chocolate",
+          "hint": "Cocoa"
+        },
+        {
+          "word": "Icecream",
+          "hint": "Cold"
+        },
+        {
+          "word": "Smoothie",
+          "hint": "Blend"
+        },
+        {
+          "word": "Coffee",
+          "hint": "Caffeine"
+        },
+        {
+          "word": "Tea",
+          "hint": "Leaves"
+        },
+        {
+          "word": "Lemonade",
+          "hint": "Sour"
+        },
+        {
+          "word": "Milkshake",
+          "hint": "Straw"
+        },
+        {
+          "word": "Pineapple",
+          "hint": "Tropical"
+        },
+        {
+          "word": "Watermelon",
+          "hint": "Seeds"
+        },
+        {
+          "word": "Strawberry",
+          "hint": "Red"
+        },
+        {
+          "word": "Banana",
+          "hint": "Peel"
+        },
+        {
+          "word": "Mango",
+          "hint": "Yellow"
+        },
+        {
+          "word": "Avocado",
+          "hint": "Green"
+        },
+        {
+          "word": "Broccoli",
+          "hint": "Tree"
+        },
+        {
+          "word": "Carrot",
+          "hint": "Orange"
+        },
+        {
+          "word": "Potato",
+          "hint": "Fries"
+        },
+        {
+          "word": "Tomato",
+          "hint": "Ketchup"
+        },
+        {
+          "word": "Pumpkin",
+          "hint": "Halloween"
+        },
+        {
+          "word": "Honey",
+          "hint": "Bees"
+        },
+        {
+          "word": "Pancakes",
+          "hint": "Stack"
+        },
+        {
+          "word": "Muffin",
+          "hint": "Bake"
+        },
+        {
+          "word": "Pasta",
+          "hint": "Italian"
+        }
       ]
     },
     {
       "id": "movies",
       "name": "Movies",
       "words": [
-        "Titanic", "Avatar", "Frozen", "Joker", "Inception", "Gladiator",
-        "Jaws", "Shrek", "Up", "Coco", "Cars", "Moana", "Aladdin", "Tarzan",
-        "Matrix", "Terminator", "Rocky", "Twilight", "Casablanca", "Psycho",
-        "Alien", "Predator", "Godzilla", "Batman", "Superman", "Spiderman",
-        "Ironman", "Thor", "Hulk", "Deadpool", "Encanto", "Tangled",
-        "Dumbo", "Bambi", "Pinocchio", "Cinderella", "Mulan", "Brave",
-        "Ratatouille", "Wall-E", "Zootopia", "Soul", "Luca", "Onward",
-        "Avengers", "Interstellar", "Dunkirk", "Parasite", "Whiplash", "Amelie"
+        {
+          "word": "Titanic",
+          "hint": "Iceberg"
+        },
+        {
+          "word": "Avatar",
+          "hint": "Blue"
+        },
+        {
+          "word": "Frozen",
+          "hint": "Snow"
+        },
+        {
+          "word": "Joker",
+          "hint": "Clown"
+        },
+        {
+          "word": "Inception",
+          "hint": "Dream"
+        },
+        {
+          "word": "Gladiator",
+          "hint": "Arena"
+        },
+        {
+          "word": "Jaws",
+          "hint": "Shark"
+        },
+        {
+          "word": "Shrek",
+          "hint": "Ogre"
+        },
+        {
+          "word": "Up",
+          "hint": "Balloons"
+        },
+        {
+          "word": "Coco",
+          "hint": "Music"
+        },
+        {
+          "word": "Cars",
+          "hint": "Race"
+        },
+        {
+          "word": "Moana",
+          "hint": "Ocean"
+        },
+        {
+          "word": "Aladdin",
+          "hint": "Lamp"
+        },
+        {
+          "word": "Tarzan",
+          "hint": "Jungle"
+        },
+        {
+          "word": "Matrix",
+          "hint": "Code"
+        },
+        {
+          "word": "Terminator",
+          "hint": "Robot"
+        },
+        {
+          "word": "Rocky",
+          "hint": "Boxing"
+        },
+        {
+          "word": "Twilight",
+          "hint": "Vampire"
+        },
+        {
+          "word": "Casablanca",
+          "hint": "Romance"
+        },
+        {
+          "word": "Psycho",
+          "hint": "Shower"
+        },
+        {
+          "word": "Alien",
+          "hint": "Space"
+        },
+        {
+          "word": "Predator",
+          "hint": "Hunter"
+        },
+        {
+          "word": "Godzilla",
+          "hint": "Monster"
+        },
+        {
+          "word": "Batman",
+          "hint": "Gotham"
+        },
+        {
+          "word": "Superman",
+          "hint": "Cape"
+        },
+        {
+          "word": "Spiderman",
+          "hint": "Web"
+        },
+        {
+          "word": "Ironman",
+          "hint": "Suit"
+        },
+        {
+          "word": "Thor",
+          "hint": "Hammer"
+        },
+        {
+          "word": "Hulk",
+          "hint": "Green"
+        },
+        {
+          "word": "Deadpool",
+          "hint": "Mask"
+        },
+        {
+          "word": "Encanto",
+          "hint": "Magic"
+        },
+        {
+          "word": "Tangled",
+          "hint": "Hair"
+        },
+        {
+          "word": "Dumbo",
+          "hint": "Ears"
+        },
+        {
+          "word": "Bambi",
+          "hint": "Deer"
+        },
+        {
+          "word": "Pinocchio",
+          "hint": "Nose"
+        },
+        {
+          "word": "Cinderella",
+          "hint": "Slipper"
+        },
+        {
+          "word": "Mulan",
+          "hint": "Warrior"
+        },
+        {
+          "word": "Brave",
+          "hint": "Archery"
+        },
+        {
+          "word": "Ratatouille",
+          "hint": "Rat"
+        },
+        {
+          "word": "Wall-E",
+          "hint": "Robot"
+        },
+        {
+          "word": "Zootopia",
+          "hint": "Animals"
+        },
+        {
+          "word": "Soul",
+          "hint": "Jazz"
+        },
+        {
+          "word": "Luca",
+          "hint": "Sea"
+        },
+        {
+          "word": "Onward",
+          "hint": "Quest"
+        },
+        {
+          "word": "Avengers",
+          "hint": "Heroes"
+        },
+        {
+          "word": "Interstellar",
+          "hint": "Wormhole"
+        },
+        {
+          "word": "Dunkirk",
+          "hint": "War"
+        },
+        {
+          "word": "Parasite",
+          "hint": "Class"
+        },
+        {
+          "word": "Whiplash",
+          "hint": "Drums"
+        },
+        {
+          "word": "Amelie",
+          "hint": "Paris"
+        }
       ]
     },
     {
       "id": "sports",
       "name": "Sports",
       "words": [
-        "Soccer", "Basketball", "Tennis", "Cricket", "Baseball", "Golf",
-        "Boxing", "Swimming", "Cycling", "Running", "Skiing", "Snowboarding",
-        "Surfing", "Skateboarding", "Volleyball", "Badminton", "Hockey",
-        "Rugby", "Football", "Wrestling", "Karate", "Judo", "Fencing",
-        "Archery", "Rowing", "Sailing", "Diving", "Gymnastics", "Climbing",
-        "Bowling", "Darts", "Billiards", "Curling", "Polo", "Handball",
-        "Squash", "Marathon", "Triathlon", "Hurdles", "Javelin", "Discus",
-        "Weightlifting", "Kayaking", "Canoeing", "Paragliding", "Motocross",
-        "Racing", "Dodgeball", "Cheerleading", "Yoga"
+        {
+          "word": "Soccer",
+          "hint": "Goal"
+        },
+        {
+          "word": "Basketball",
+          "hint": "Hoop"
+        },
+        {
+          "word": "Tennis",
+          "hint": "Racket"
+        },
+        {
+          "word": "Cricket",
+          "hint": "Bat"
+        },
+        {
+          "word": "Baseball",
+          "hint": "Diamond"
+        },
+        {
+          "word": "Golf",
+          "hint": "Clubs"
+        },
+        {
+          "word": "Boxing",
+          "hint": "Gloves"
+        },
+        {
+          "word": "Swimming",
+          "hint": "Pool"
+        },
+        {
+          "word": "Cycling",
+          "hint": "Bike"
+        },
+        {
+          "word": "Running",
+          "hint": "Track"
+        },
+        {
+          "word": "Skiing",
+          "hint": "Snow"
+        },
+        {
+          "word": "Snowboarding",
+          "hint": "Mountain"
+        },
+        {
+          "word": "Surfing",
+          "hint": "Waves"
+        },
+        {
+          "word": "Skateboarding",
+          "hint": "Tricks"
+        },
+        {
+          "word": "Volleyball",
+          "hint": "Net"
+        },
+        {
+          "word": "Badminton",
+          "hint": "Shuttlecock"
+        },
+        {
+          "word": "Hockey",
+          "hint": "Puck"
+        },
+        {
+          "word": "Rugby",
+          "hint": "Scrum"
+        },
+        {
+          "word": "Football",
+          "hint": "Touchdown"
+        },
+        {
+          "word": "Wrestling",
+          "hint": "Mat"
+        },
+        {
+          "word": "Karate",
+          "hint": "Belt"
+        },
+        {
+          "word": "Judo",
+          "hint": "Throw"
+        },
+        {
+          "word": "Fencing",
+          "hint": "Sword"
+        },
+        {
+          "word": "Archery",
+          "hint": "Arrow"
+        },
+        {
+          "word": "Rowing",
+          "hint": "Oars"
+        },
+        {
+          "word": "Sailing",
+          "hint": "Wind"
+        },
+        {
+          "word": "Diving",
+          "hint": "Board"
+        },
+        {
+          "word": "Gymnastics",
+          "hint": "Beam"
+        },
+        {
+          "word": "Climbing",
+          "hint": "Rope"
+        },
+        {
+          "word": "Bowling",
+          "hint": "Pins"
+        },
+        {
+          "word": "Darts",
+          "hint": "Bullseye"
+        },
+        {
+          "word": "Billiards",
+          "hint": "Cue"
+        },
+        {
+          "word": "Curling",
+          "hint": "Ice"
+        },
+        {
+          "word": "Polo",
+          "hint": "Horse"
+        },
+        {
+          "word": "Handball",
+          "hint": "Court"
+        },
+        {
+          "word": "Squash",
+          "hint": "Wall"
+        },
+        {
+          "word": "Marathon",
+          "hint": "Distance"
+        },
+        {
+          "word": "Triathlon",
+          "hint": "Three"
+        },
+        {
+          "word": "Hurdles",
+          "hint": "Jump"
+        },
+        {
+          "word": "Javelin",
+          "hint": "Spear"
+        },
+        {
+          "word": "Discus",
+          "hint": "Disc"
+        },
+        {
+          "word": "Weightlifting",
+          "hint": "Barbell"
+        },
+        {
+          "word": "Kayaking",
+          "hint": "Paddle"
+        },
+        {
+          "word": "Canoeing",
+          "hint": "River"
+        },
+        {
+          "word": "Paragliding",
+          "hint": "Glide"
+        },
+        {
+          "word": "Motocross",
+          "hint": "Dirt"
+        },
+        {
+          "word": "Racing",
+          "hint": "Speed"
+        },
+        {
+          "word": "Dodgeball",
+          "hint": "Dodge"
+        },
+        {
+          "word": "Cheerleading",
+          "hint": "Pompoms"
+        },
+        {
+          "word": "Yoga",
+          "hint": "Stretch"
+        }
       ]
     },
     {
       "id": "countries",
       "name": "Countries",
       "words": [
-        "India", "Japan", "Brazil", "Canada", "France", "Germany", "Italy",
-        "Spain", "Mexico", "Egypt", "Kenya", "Nigeria", "Russia", "China",
-        "Australia", "Argentina", "Norway", "Sweden", "Finland", "Iceland",
-        "Greece", "Turkey", "Thailand", "Vietnam", "Indonesia", "Malaysia",
-        "Singapore", "Portugal", "Ireland", "Scotland", "Poland", "Austria",
-        "Switzerland", "Netherlands", "Belgium", "Denmark", "Morocco",
-        "Peru", "Chile", "Colombia", "Cuba", "Jamaica", "Iran", "Iraq",
-        "Israel", "Nepal", "Pakistan", "Bangladesh", "Ukraine", "Hungary"
+        {
+          "word": "India",
+          "hint": "Taj"
+        },
+        {
+          "word": "Japan",
+          "hint": "Sushi"
+        },
+        {
+          "word": "Brazil",
+          "hint": "Carnival"
+        },
+        {
+          "word": "Canada",
+          "hint": "Maple"
+        },
+        {
+          "word": "France",
+          "hint": "Eiffel"
+        },
+        {
+          "word": "Germany",
+          "hint": "Beer"
+        },
+        {
+          "word": "Italy",
+          "hint": "Pizza"
+        },
+        {
+          "word": "Spain",
+          "hint": "Flamenco"
+        },
+        {
+          "word": "Mexico",
+          "hint": "Tacos"
+        },
+        {
+          "word": "Egypt",
+          "hint": "Pyramids"
+        },
+        {
+          "word": "Kenya",
+          "hint": "Safari"
+        },
+        {
+          "word": "Nigeria",
+          "hint": "Lagos"
+        },
+        {
+          "word": "Russia",
+          "hint": "Vodka"
+        },
+        {
+          "word": "China",
+          "hint": "Wall"
+        },
+        {
+          "word": "Australia",
+          "hint": "Kangaroo"
+        },
+        {
+          "word": "Argentina",
+          "hint": "Tango"
+        },
+        {
+          "word": "Norway",
+          "hint": "Fjords"
+        },
+        {
+          "word": "Sweden",
+          "hint": "IKEA"
+        },
+        {
+          "word": "Finland",
+          "hint": "Sauna"
+        },
+        {
+          "word": "Iceland",
+          "hint": "Glaciers"
+        },
+        {
+          "word": "Greece",
+          "hint": "Olympus"
+        },
+        {
+          "word": "Turkey",
+          "hint": "Bazaar"
+        },
+        {
+          "word": "Thailand",
+          "hint": "Temples"
+        },
+        {
+          "word": "Vietnam",
+          "hint": "Pho"
+        },
+        {
+          "word": "Indonesia",
+          "hint": "Bali"
+        },
+        {
+          "word": "Malaysia",
+          "hint": "Towers"
+        },
+        {
+          "word": "Singapore",
+          "hint": "City"
+        },
+        {
+          "word": "Portugal",
+          "hint": "Lisbon"
+        },
+        {
+          "word": "Ireland",
+          "hint": "Shamrock"
+        },
+        {
+          "word": "Scotland",
+          "hint": "Kilt"
+        },
+        {
+          "word": "Poland",
+          "hint": "Pierogi"
+        },
+        {
+          "word": "Austria",
+          "hint": "Alps"
+        },
+        {
+          "word": "Switzerland",
+          "hint": "Chocolate"
+        },
+        {
+          "word": "Netherlands",
+          "hint": "Tulips"
+        },
+        {
+          "word": "Belgium",
+          "hint": "Waffles"
+        },
+        {
+          "word": "Denmark",
+          "hint": "Vikings"
+        },
+        {
+          "word": "Morocco",
+          "hint": "Desert"
+        },
+        {
+          "word": "Peru",
+          "hint": "Machu"
+        },
+        {
+          "word": "Chile",
+          "hint": "Andes"
+        },
+        {
+          "word": "Colombia",
+          "hint": "Coffee"
+        },
+        {
+          "word": "Cuba",
+          "hint": "Cigars"
+        },
+        {
+          "word": "Jamaica",
+          "hint": "Reggae"
+        },
+        {
+          "word": "Iran",
+          "hint": "Persia"
+        },
+        {
+          "word": "Iraq",
+          "hint": "Tigris"
+        },
+        {
+          "word": "Israel",
+          "hint": "Jerusalem"
+        },
+        {
+          "word": "Nepal",
+          "hint": "Everest"
+        },
+        {
+          "word": "Pakistan",
+          "hint": "Cricket"
+        },
+        {
+          "word": "Bangladesh",
+          "hint": "Delta"
+        },
+        {
+          "word": "Ukraine",
+          "hint": "Kyiv"
+        },
+        {
+          "word": "Hungary",
+          "hint": "Budapest"
+        }
       ]
     },
     {
       "id": "jobs",
       "name": "Jobs",
       "words": [
-        "Doctor", "Teacher", "Engineer", "Pilot", "Chef", "Nurse", "Lawyer",
-        "Farmer", "Police", "Firefighter", "Astronaut", "Scientist", "Artist",
-        "Musician", "Dancer", "Actor", "Singer", "Writer", "Journalist",
-        "Photographer", "Architect", "Plumber", "Electrician", "Carpenter",
-        "Mechanic", "Dentist", "Surgeon", "Vet", "Barber", "Tailor", "Baker",
-        "Butcher", "Cashier", "Waiter", "Librarian", "Pharmacist", "Soldier",
-        "Sailor", "Detective", "Judge", "Accountant", "Banker", "Programmer",
-        "Designer", "Painter", "Plumber", "Gardener", "Fisherman", "Magician",
-        "Referee"
+        {
+          "word": "Doctor",
+          "hint": "Hospital"
+        },
+        {
+          "word": "Teacher",
+          "hint": "School"
+        },
+        {
+          "word": "Engineer",
+          "hint": "Blueprint"
+        },
+        {
+          "word": "Pilot",
+          "hint": "Plane"
+        },
+        {
+          "word": "Chef",
+          "hint": "Kitchen"
+        },
+        {
+          "word": "Nurse",
+          "hint": "Care"
+        },
+        {
+          "word": "Lawyer",
+          "hint": "Court"
+        },
+        {
+          "word": "Farmer",
+          "hint": "Crops"
+        },
+        {
+          "word": "Police",
+          "hint": "Badge"
+        },
+        {
+          "word": "Firefighter",
+          "hint": "Hose"
+        },
+        {
+          "word": "Astronaut",
+          "hint": "Space"
+        },
+        {
+          "word": "Scientist",
+          "hint": "Lab"
+        },
+        {
+          "word": "Artist",
+          "hint": "Paint"
+        },
+        {
+          "word": "Musician",
+          "hint": "Instrument"
+        },
+        {
+          "word": "Dancer",
+          "hint": "Stage"
+        },
+        {
+          "word": "Actor",
+          "hint": "Film"
+        },
+        {
+          "word": "Singer",
+          "hint": "Microphone"
+        },
+        {
+          "word": "Writer",
+          "hint": "Pen"
+        },
+        {
+          "word": "Journalist",
+          "hint": "News"
+        },
+        {
+          "word": "Photographer",
+          "hint": "Camera"
+        },
+        {
+          "word": "Architect",
+          "hint": "Building"
+        },
+        {
+          "word": "Plumber",
+          "hint": "Pipes"
+        },
+        {
+          "word": "Electrician",
+          "hint": "Wires"
+        },
+        {
+          "word": "Carpenter",
+          "hint": "Wood"
+        },
+        {
+          "word": "Mechanic",
+          "hint": "Engine"
+        },
+        {
+          "word": "Dentist",
+          "hint": "Teeth"
+        },
+        {
+          "word": "Surgeon",
+          "hint": "Operation"
+        },
+        {
+          "word": "Vet",
+          "hint": "Animals"
+        },
+        {
+          "word": "Barber",
+          "hint": "Scissors"
+        },
+        {
+          "word": "Tailor",
+          "hint": "Thread"
+        },
+        {
+          "word": "Baker",
+          "hint": "Bread"
+        },
+        {
+          "word": "Butcher",
+          "hint": "Meat"
+        },
+        {
+          "word": "Cashier",
+          "hint": "Register"
+        },
+        {
+          "word": "Waiter",
+          "hint": "Restaurant"
+        },
+        {
+          "word": "Librarian",
+          "hint": "Books"
+        },
+        {
+          "word": "Pharmacist",
+          "hint": "Medicine"
+        },
+        {
+          "word": "Soldier",
+          "hint": "Army"
+        },
+        {
+          "word": "Sailor",
+          "hint": "Ship"
+        },
+        {
+          "word": "Detective",
+          "hint": "Clues"
+        },
+        {
+          "word": "Judge",
+          "hint": "Gavel"
+        },
+        {
+          "word": "Accountant",
+          "hint": "Numbers"
+        },
+        {
+          "word": "Banker",
+          "hint": "Money"
+        },
+        {
+          "word": "Programmer",
+          "hint": "Code"
+        },
+        {
+          "word": "Designer",
+          "hint": "Layout"
+        },
+        {
+          "word": "Painter",
+          "hint": "Brush"
+        },
+        {
+          "word": "Plumber",
+          "hint": "Pipes"
+        },
+        {
+          "word": "Gardener",
+          "hint": "Plants"
+        },
+        {
+          "word": "Fisherman",
+          "hint": "Net"
+        },
+        {
+          "word": "Magician",
+          "hint": "Tricks"
+        },
+        {
+          "word": "Referee",
+          "hint": "Whistle"
+        }
       ]
     },
     {
       "id": "household",
       "name": "Household Items",
       "words": [
-        "Toothbrush", "Pillow", "Blanket", "Mirror", "Lamp", "Clock", "Chair",
-        "Table", "Sofa", "Television", "Fridge", "Microwave", "Toaster",
-        "Kettle", "Blender", "Spoon", "Fork", "Knife", "Plate", "Cup", "Bowl",
-        "Bottle", "Towel", "Soap", "Shampoo", "Comb", "Scissors", "Umbrella",
-        "Broom", "Bucket", "Vacuum", "Iron", "Hairdryer", "Candle", "Curtain",
-        "Carpet", "Doormat", "Wallet", "Keys", "Remote", "Charger", "Battery",
-        "Notebook", "Pencil", "Eraser", "Stapler", "Calendar", "Backpack",
-        "Hanger", "Ladder"
+        {
+          "word": "Toothbrush",
+          "hint": "Teeth"
+        },
+        {
+          "word": "Pillow",
+          "hint": "Sleep"
+        },
+        {
+          "word": "Blanket",
+          "hint": "Warm"
+        },
+        {
+          "word": "Mirror",
+          "hint": "Reflection"
+        },
+        {
+          "word": "Lamp",
+          "hint": "Light"
+        },
+        {
+          "word": "Clock",
+          "hint": "Time"
+        },
+        {
+          "word": "Chair",
+          "hint": "Sit"
+        },
+        {
+          "word": "Table",
+          "hint": "Surface"
+        },
+        {
+          "word": "Sofa",
+          "hint": "Couch"
+        },
+        {
+          "word": "Television",
+          "hint": "Screen"
+        },
+        {
+          "word": "Fridge",
+          "hint": "Cold"
+        },
+        {
+          "word": "Microwave",
+          "hint": "Heat"
+        },
+        {
+          "word": "Toaster",
+          "hint": "Bread"
+        },
+        {
+          "word": "Kettle",
+          "hint": "Boil"
+        },
+        {
+          "word": "Blender",
+          "hint": "Mix"
+        },
+        {
+          "word": "Spoon",
+          "hint": "Stir"
+        },
+        {
+          "word": "Fork",
+          "hint": "Prongs"
+        },
+        {
+          "word": "Knife",
+          "hint": "Cut"
+        },
+        {
+          "word": "Plate",
+          "hint": "Dish"
+        },
+        {
+          "word": "Cup",
+          "hint": "Drink"
+        },
+        {
+          "word": "Bowl",
+          "hint": "Soup"
+        },
+        {
+          "word": "Bottle",
+          "hint": "Liquid"
+        },
+        {
+          "word": "Towel",
+          "hint": "Dry"
+        },
+        {
+          "word": "Soap",
+          "hint": "Water"
+        },
+        {
+          "word": "Shampoo",
+          "hint": "Hair"
+        },
+        {
+          "word": "Comb",
+          "hint": "Tangle"
+        },
+        {
+          "word": "Scissors",
+          "hint": "Snip"
+        },
+        {
+          "word": "Umbrella",
+          "hint": "Rain"
+        },
+        {
+          "word": "Broom",
+          "hint": "Sweep"
+        },
+        {
+          "word": "Bucket",
+          "hint": "Carry"
+        },
+        {
+          "word": "Vacuum",
+          "hint": "Dust"
+        },
+        {
+          "word": "Iron",
+          "hint": "Wrinkles"
+        },
+        {
+          "word": "Hairdryer",
+          "hint": "Blow"
+        },
+        {
+          "word": "Candle",
+          "hint": "Flame"
+        },
+        {
+          "word": "Curtain",
+          "hint": "Window"
+        },
+        {
+          "word": "Carpet",
+          "hint": "Floor"
+        },
+        {
+          "word": "Doormat",
+          "hint": "Welcome"
+        },
+        {
+          "word": "Wallet",
+          "hint": "Money"
+        },
+        {
+          "word": "Keys",
+          "hint": "Lock"
+        },
+        {
+          "word": "Remote",
+          "hint": "Control"
+        },
+        {
+          "word": "Charger",
+          "hint": "Battery"
+        },
+        {
+          "word": "Battery",
+          "hint": "Power"
+        },
+        {
+          "word": "Notebook",
+          "hint": "Pages"
+        },
+        {
+          "word": "Pencil",
+          "hint": "Write"
+        },
+        {
+          "word": "Eraser",
+          "hint": "Rub"
+        },
+        {
+          "word": "Stapler",
+          "hint": "Staples"
+        },
+        {
+          "word": "Calendar",
+          "hint": "Dates"
+        },
+        {
+          "word": "Backpack",
+          "hint": "School"
+        },
+        {
+          "word": "Hanger",
+          "hint": "Clothes"
+        },
+        {
+          "word": "Ladder",
+          "hint": "Climb"
+        }
       ]
     },
     {
       "id": "famous_people",
       "name": "Famous People",
       "words": [
-        "Einstein", "Newton", "Gandhi", "Mandela", "Lincoln", "Napoleon",
-        "Cleopatra", "Shakespeare", "Beethoven", "Mozart", "Picasso",
-        "DaVinci", "Darwin", "Tesla", "Edison", "Galileo", "Aristotle",
-        "Socrates", "Columbus", "Marco Polo", "Beyonce", "Madonna", "Eminem",
-        "Adele", "Drake", "Rihanna", "Messi", "Ronaldo", "Federer", "Jordan",
-        "Pele", "Maradona", "Bolt", "Phelps", "Serena", "Oprah", "Spielberg",
-        "Hitchcock", "Disney", "Jobs", "Gates", "Musk", "Bezos", "Zuckerberg",
-        "Churchill", "Roosevelt", "Kennedy", "Obama", "Curie", "Hawking"
+        {
+          "word": "Einstein",
+          "hint": "Relativity"
+        },
+        {
+          "word": "Newton",
+          "hint": "Gravity"
+        },
+        {
+          "word": "Gandhi",
+          "hint": "Peace"
+        },
+        {
+          "word": "Mandela",
+          "hint": "Freedom"
+        },
+        {
+          "word": "Lincoln",
+          "hint": "President"
+        },
+        {
+          "word": "Napoleon",
+          "hint": "France"
+        },
+        {
+          "word": "Cleopatra",
+          "hint": "Egypt"
+        },
+        {
+          "word": "Shakespeare",
+          "hint": "Plays"
+        },
+        {
+          "word": "Beethoven",
+          "hint": "Symphony"
+        },
+        {
+          "word": "Mozart",
+          "hint": "Piano"
+        },
+        {
+          "word": "Picasso",
+          "hint": "Cubism"
+        },
+        {
+          "word": "DaVinci",
+          "hint": "MonaLisa"
+        },
+        {
+          "word": "Darwin",
+          "hint": "Evolution"
+        },
+        {
+          "word": "Tesla",
+          "hint": "Electricity"
+        },
+        {
+          "word": "Edison",
+          "hint": "Lightbulb"
+        },
+        {
+          "word": "Galileo",
+          "hint": "Telescope"
+        },
+        {
+          "word": "Aristotle",
+          "hint": "Philosophy"
+        },
+        {
+          "word": "Socrates",
+          "hint": "Athens"
+        },
+        {
+          "word": "Columbus",
+          "hint": "Voyage"
+        },
+        {
+          "word": "Marco Polo",
+          "hint": "Travels"
+        },
+        {
+          "word": "Beyonce",
+          "hint": "Singer"
+        },
+        {
+          "word": "Madonna",
+          "hint": "Pop"
+        },
+        {
+          "word": "Eminem",
+          "hint": "Rap"
+        },
+        {
+          "word": "Adele",
+          "hint": "Ballad"
+        },
+        {
+          "word": "Drake",
+          "hint": "Rapper"
+        },
+        {
+          "word": "Rihanna",
+          "hint": "Diamonds"
+        },
+        {
+          "word": "Messi",
+          "hint": "Soccer"
+        },
+        {
+          "word": "Ronaldo",
+          "hint": "Portugal"
+        },
+        {
+          "word": "Federer",
+          "hint": "Tennis"
+        },
+        {
+          "word": "Jordan",
+          "hint": "Basketball"
+        },
+        {
+          "word": "Pele",
+          "hint": "Brazil"
+        },
+        {
+          "word": "Maradona",
+          "hint": "Football"
+        },
+        {
+          "word": "Bolt",
+          "hint": "Sprint"
+        },
+        {
+          "word": "Phelps",
+          "hint": "Swimming"
+        },
+        {
+          "word": "Serena",
+          "hint": "Williams"
+        },
+        {
+          "word": "Oprah",
+          "hint": "Talkshow"
+        },
+        {
+          "word": "Spielberg",
+          "hint": "Director"
+        },
+        {
+          "word": "Hitchcock",
+          "hint": "Suspense"
+        },
+        {
+          "word": "Disney",
+          "hint": "Mickey"
+        },
+        {
+          "word": "Jobs",
+          "hint": "Apple"
+        },
+        {
+          "word": "Gates",
+          "hint": "Microsoft"
+        },
+        {
+          "word": "Musk",
+          "hint": "Rockets"
+        },
+        {
+          "word": "Bezos",
+          "hint": "Amazon"
+        },
+        {
+          "word": "Zuckerberg",
+          "hint": "Facebook"
+        },
+        {
+          "word": "Churchill",
+          "hint": "Britain"
+        },
+        {
+          "word": "Roosevelt",
+          "hint": "NewDeal"
+        },
+        {
+          "word": "Kennedy",
+          "hint": "Camelot"
+        },
+        {
+          "word": "Obama",
+          "hint": "Hope"
+        },
+        {
+          "word": "Curie",
+          "hint": "Radium"
+        },
+        {
+          "word": "Hawking",
+          "hint": "Cosmos"
+        }
       ]
     },
     {
       "id": "video_games",
       "name": "Video Games",
       "words": [
-        "Mario", "Zelda", "Tetris", "Pacman", "Pokemon", "Minecraft", "Fortnite",
-        "Roblox", "Sonic", "Pong", "Kirby", "Metroid", "Halo", "Doom",
-        "Portal", "Skyrim", "Fallout", "Overwatch", "Valorant", "Among Us",
-        "Terraria", "Stardew", "Witcher", "Cyberpunk", "Tekken", "Streetfighter",
-        "Mortal Kombat", "Pubg", "Crossy Road", "Candy Crush", "Angry Birds",
-        "Subway Surfers", "Temple Run", "Clash Royale", "Hearthstone",
-        "Starcraft", "Warcraft", "Diablo", "Bioshock", "Borderlands",
-        "Splatoon", "Pikmin", "Donkey Kong", "Bomberman", "Galaga", "Asteroids",
-        "Frogger", "Centipede", "Spaceinvaders", "Rocket League"
+        {
+          "word": "Mario",
+          "hint": "Plumber"
+        },
+        {
+          "word": "Zelda",
+          "hint": "Triforce"
+        },
+        {
+          "word": "Tetris",
+          "hint": "Blocks"
+        },
+        {
+          "word": "Pacman",
+          "hint": "Maze"
+        },
+        {
+          "word": "Pokemon",
+          "hint": "Catch"
+        },
+        {
+          "word": "Minecraft",
+          "hint": "Crafting"
+        },
+        {
+          "word": "Fortnite",
+          "hint": "Battle"
+        },
+        {
+          "word": "Roblox",
+          "hint": "Build"
+        },
+        {
+          "word": "Sonic",
+          "hint": "Speed"
+        },
+        {
+          "word": "Pong",
+          "hint": "Paddle"
+        },
+        {
+          "word": "Kirby",
+          "hint": "Pink"
+        },
+        {
+          "word": "Metroid",
+          "hint": "Samus"
+        },
+        {
+          "word": "Halo",
+          "hint": "Spartan"
+        },
+        {
+          "word": "Doom",
+          "hint": "Demons"
+        },
+        {
+          "word": "Portal",
+          "hint": "Cake"
+        },
+        {
+          "word": "Skyrim",
+          "hint": "Dragons"
+        },
+        {
+          "word": "Fallout",
+          "hint": "Wasteland"
+        },
+        {
+          "word": "Overwatch",
+          "hint": "Heroes"
+        },
+        {
+          "word": "Valorant",
+          "hint": "Agents"
+        },
+        {
+          "word": "Among Us",
+          "hint": "Crewmate"
+        },
+        {
+          "word": "Terraria",
+          "hint": "Mining"
+        },
+        {
+          "word": "Stardew",
+          "hint": "Farming"
+        },
+        {
+          "word": "Witcher",
+          "hint": "Geralt"
+        },
+        {
+          "word": "Cyberpunk",
+          "hint": "Future"
+        },
+        {
+          "word": "Tekken",
+          "hint": "Fighting"
+        },
+        {
+          "word": "Streetfighter",
+          "hint": "Hadouken"
+        },
+        {
+          "word": "Mortal Kombat",
+          "hint": "Fatality"
+        },
+        {
+          "word": "Pubg",
+          "hint": "Survival"
+        },
+        {
+          "word": "Crossy Road",
+          "hint": "Chicken"
+        },
+        {
+          "word": "Candy Crush",
+          "hint": "Candy"
+        },
+        {
+          "word": "Angry Birds",
+          "hint": "Slingshot"
+        },
+        {
+          "word": "Subway Surfers",
+          "hint": "Run"
+        },
+        {
+          "word": "Temple Run",
+          "hint": "Escape"
+        },
+        {
+          "word": "Clash Royale",
+          "hint": "Towers"
+        },
+        {
+          "word": "Hearthstone",
+          "hint": "Cards"
+        },
+        {
+          "word": "Starcraft",
+          "hint": "Zerg"
+        },
+        {
+          "word": "Warcraft",
+          "hint": "Orcs"
+        },
+        {
+          "word": "Diablo",
+          "hint": "Hell"
+        },
+        {
+          "word": "Bioshock",
+          "hint": "Rapture"
+        },
+        {
+          "word": "Borderlands",
+          "hint": "Loot"
+        },
+        {
+          "word": "Splatoon",
+          "hint": "Ink"
+        },
+        {
+          "word": "Pikmin",
+          "hint": "Plants"
+        },
+        {
+          "word": "Donkey Kong",
+          "hint": "Banana"
+        },
+        {
+          "word": "Bomberman",
+          "hint": "Bombs"
+        },
+        {
+          "word": "Galaga",
+          "hint": "Aliens"
+        },
+        {
+          "word": "Asteroids",
+          "hint": "Space"
+        },
+        {
+          "word": "Frogger",
+          "hint": "Cross"
+        },
+        {
+          "word": "Centipede",
+          "hint": "Bug"
+        },
+        {
+          "word": "Spaceinvaders",
+          "hint": "Invasion"
+        },
+        {
+          "word": "Rocket League",
+          "hint": "Cars"
+        }
       ]
     },
     {
       "id": "nature",
       "name": "Nature",
       "words": [
-        "Mountain", "River", "Ocean", "Forest", "Desert", "Volcano", "Waterfall",
-        "Glacier", "Canyon", "Cave", "Island", "Beach", "Valley", "Meadow",
-        "Jungle", "Swamp", "Lake", "Pond", "Rainbow", "Lightning", "Thunder",
-        "Tornado", "Hurricane", "Earthquake", "Sunset", "Sunrise", "Cloud",
-        "Snow", "Rain", "Wind", "Fog", "Dew", "Storm", "Cliff", "Reef",
-        "Tree", "Flower", "Cactus", "Mushroom", "Leaf", "Seashell", "Coral",
-        "Iceberg", "Geyser", "Meteor", "Comet", "Star", "Moon", "Planet", "Galaxy"
+        {
+          "word": "Mountain",
+          "hint": "Peak"
+        },
+        {
+          "word": "River",
+          "hint": "Flow"
+        },
+        {
+          "word": "Ocean",
+          "hint": "Waves"
+        },
+        {
+          "word": "Forest",
+          "hint": "Trees"
+        },
+        {
+          "word": "Desert",
+          "hint": "Sand"
+        },
+        {
+          "word": "Volcano",
+          "hint": "Lava"
+        },
+        {
+          "word": "Waterfall",
+          "hint": "Cascade"
+        },
+        {
+          "word": "Glacier",
+          "hint": "Ice"
+        },
+        {
+          "word": "Canyon",
+          "hint": "Gorge"
+        },
+        {
+          "word": "Cave",
+          "hint": "Dark"
+        },
+        {
+          "word": "Island",
+          "hint": "Isolated"
+        },
+        {
+          "word": "Beach",
+          "hint": "Shore"
+        },
+        {
+          "word": "Valley",
+          "hint": "Lowland"
+        },
+        {
+          "word": "Meadow",
+          "hint": "Grass"
+        },
+        {
+          "word": "Jungle",
+          "hint": "Dense"
+        },
+        {
+          "word": "Swamp",
+          "hint": "Marsh"
+        },
+        {
+          "word": "Lake",
+          "hint": "Water"
+        },
+        {
+          "word": "Pond",
+          "hint": "Small"
+        },
+        {
+          "word": "Rainbow",
+          "hint": "Colors"
+        },
+        {
+          "word": "Lightning",
+          "hint": "Bolt"
+        },
+        {
+          "word": "Thunder",
+          "hint": "Sound"
+        },
+        {
+          "word": "Tornado",
+          "hint": "Twister"
+        },
+        {
+          "word": "Hurricane",
+          "hint": "Storm"
+        },
+        {
+          "word": "Earthquake",
+          "hint": "Tremor"
+        },
+        {
+          "word": "Sunset",
+          "hint": "Dusk"
+        },
+        {
+          "word": "Sunrise",
+          "hint": "Dawn"
+        },
+        {
+          "word": "Cloud",
+          "hint": "Sky"
+        },
+        {
+          "word": "Snow",
+          "hint": "White"
+        },
+        {
+          "word": "Rain",
+          "hint": "Drops"
+        },
+        {
+          "word": "Wind",
+          "hint": "Breeze"
+        },
+        {
+          "word": "Fog",
+          "hint": "Mist"
+        },
+        {
+          "word": "Dew",
+          "hint": "Morning"
+        },
+        {
+          "word": "Storm",
+          "hint": "Tempest"
+        },
+        {
+          "word": "Cliff",
+          "hint": "Edge"
+        },
+        {
+          "word": "Reef",
+          "hint": "Coral"
+        },
+        {
+          "word": "Tree",
+          "hint": "Branches"
+        },
+        {
+          "word": "Flower",
+          "hint": "Petals"
+        },
+        {
+          "word": "Cactus",
+          "hint": "Spines"
+        },
+        {
+          "word": "Mushroom",
+          "hint": "Fungus"
+        },
+        {
+          "word": "Leaf",
+          "hint": "Green"
+        },
+        {
+          "word": "Seashell",
+          "hint": "Beach"
+        },
+        {
+          "word": "Coral",
+          "hint": "Reef"
+        },
+        {
+          "word": "Iceberg",
+          "hint": "Float"
+        },
+        {
+          "word": "Geyser",
+          "hint": "Eruption"
+        },
+        {
+          "word": "Meteor",
+          "hint": "Shower"
+        },
+        {
+          "word": "Comet",
+          "hint": "Tail"
+        },
+        {
+          "word": "Star",
+          "hint": "Twinkle"
+        },
+        {
+          "word": "Moon",
+          "hint": "Crater"
+        },
+        {
+          "word": "Planet",
+          "hint": "Orbit"
+        },
+        {
+          "word": "Galaxy",
+          "hint": "Stars"
+        }
       ]
     }
   ]

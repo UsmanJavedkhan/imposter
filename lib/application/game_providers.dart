@@ -71,7 +71,10 @@ class GameController extends Notifier<GameSession> {
       names: names,
       wordPool: [word],
     );
-    state = GameSession(game: game, revealIndex: 0);
+    state = GameSession(
+      game: game.copyWith(secretHint: theme.hintFor(word)),
+      revealIndex: 0,
+    );
   }
 
   /// Advance to the next player during the role-reveal pass-around.

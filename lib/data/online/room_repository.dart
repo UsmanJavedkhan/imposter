@@ -175,6 +175,7 @@ class RoomRepository {
   Future<void> startGame({
     required String code,
     required String secretWord,
+    String hintWord = '',
   }) async {
     final roomSnap = await _room(code).get();
     final room = OnlineRoom.fromDoc(roomSnap);
@@ -196,8 +197,11 @@ class RoomRepository {
         'role': role.name,
         // Only civilians get the word; imposters never receive it.
         'secretWord': isImposter ? null : secretWord,
-        // Imposters get a starting hint derived from the word instead.
-        'hint': isImposter ? buildImposterHint(secretWord) : null,
+        // Imposters get a related-word hint instead (e.g. "Water" for "Soap"),
+        // falling back to a spelling hint if no curated hint was supplied.
+        'hint': isImposter
+            ? (hintWord.isNotEmpty ? hintWord : buildImposterHint(secretWord))
+            : null,
         'themeName': room.themeName,
       });
     }
