@@ -12,6 +12,7 @@ import '../../widgets/flip_card.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/hint_chip.dart';
 import '../../widgets/phase_switcher.dart';
+import '../../widgets/ui_kit.dart';
 import '../../widgets/win_confetti.dart';
 
 /// The synced online game. Every device watches the same Firestore room and
@@ -156,8 +157,7 @@ class _HostControls extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: FilledButton.icon(
-          style:
-              FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+          style: lavenderButtonStyle(),
           icon: Icon(icon),
           label: Text(label),
           onPressed: onPressed,

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../application/online_providers.dart';
 import '../../widgets/gradient_background.dart';
+import '../../widgets/ui_kit.dart';
 import 'lobby_screen.dart';
 
 /// A guest enters a room code to join.
@@ -56,7 +57,10 @@ class _JoinRoomScreenState extends ConsumerState<JoinRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Join Room')),
+      appBar: AppBar(
+        title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
+      ),
+      extendBodyBehindAppBar: true,
       body: GradientBackground(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -82,8 +86,7 @@ class _JoinRoomScreenState extends ConsumerState<JoinRoomScreen> {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16)),
+                  style: lavenderButtonStyle(),
                   icon: _joining
                       ? const SizedBox(
                           width: 20,

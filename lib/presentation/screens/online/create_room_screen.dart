@@ -6,6 +6,7 @@ import '../../../application/online_providers.dart';
 import '../../../domain/engine/imposter_rules.dart';
 import '../../../domain/models/game_theme.dart';
 import '../../widgets/gradient_background.dart';
+import '../../widgets/ui_kit.dart';
 import 'lobby_screen.dart';
 
 /// Host configures and creates a room.
@@ -53,17 +54,27 @@ class _CreateRoomScreenState extends ConsumerState<CreateRoomScreen> {
     const maxAllowed = 4;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Room')),
+      appBar: AppBar(
+        title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
+      ),
+      extendBodyBehindAppBar: true,
       body: themesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Could not load themes:\n$e')),
         data: (themes) {
           _theme ??= themes.first;
           return GradientBackground(
-            child: ListView(
-              padding: const EdgeInsets.all(20),
+            child: SafeArea(
+              child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
               children: [
-                Text('Theme', style: Theme.of(context).textTheme.titleLarge),
+                Text('Create Room',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(fontWeight: FontWeight.w800)),
+                const SizedBox(height: 20),
+                const SectionLabel('Theme'),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<GameTheme>(
                   initialValue: _theme,
@@ -76,9 +87,10 @@ class _CreateRoomScreenState extends ConsumerState<CreateRoomScreen> {
                   onChanged: (t) => setState(() => _theme = t),
                 ),
                 const SizedBox(height: 24),
-                Text('Imposters', style: Theme.of(context).textTheme.titleLarge),
+                const SectionLabel('Imposters'),
+                const SizedBox(height: 4),
                 const Text('You can adjust before starting.',
-                    style: TextStyle(color: Colors.white70)),
+                    style: TextStyle(color: Colors.white54, fontSize: 13)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -103,8 +115,7 @@ class _CreateRoomScreenState extends ConsumerState<CreateRoomScreen> {
                 ),
                 const SizedBox(height: 32),
                 FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16)),
+                  style: lavenderButtonStyle(),
                   icon: _creating
                       ? const SizedBox(
                           width: 20,
@@ -121,6 +132,7 @@ class _CreateRoomScreenState extends ConsumerState<CreateRoomScreen> {
                   style: TextStyle(color: Colors.white60),
                 ),
               ],
+            ),
             ),
           );
         },

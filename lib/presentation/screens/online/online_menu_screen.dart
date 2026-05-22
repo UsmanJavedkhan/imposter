@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../application/online_providers.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/gradient_background.dart';
+import '../../widgets/ui_kit.dart';
 import 'create_room_screen.dart';
 import 'join_room_screen.dart';
 
@@ -43,8 +45,7 @@ class _OnlineMenuScreenState extends ConsumerState<OnlineMenuScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Play Online'),
-        backgroundColor: Colors.transparent,
+        title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
       ),
       extendBodyBehindAppBar: true,
       body: GradientBackground(
@@ -58,46 +59,45 @@ class _OnlineMenuScreenState extends ConsumerState<OnlineMenuScreen> {
                     textAlign: TextAlign.center),
               ),
             ),
-            data: (_) => Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextField(
-                    controller: _nameController,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      labelText: 'Your name',
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(),
-                      filled: true,
-                    ),
+            data: (_) => ListView(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+              children: [
+                Text('Play Online',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(fontWeight: FontWeight.w800)),
+                const SizedBox(height: 4),
+                const Text('Play with friends on other devices',
+                    style: TextStyle(color: Colors.white60)),
+                const SizedBox(height: 24),
+                const SectionLabel('Your Name', color: AppColors.cyan),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _nameController,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: const InputDecoration(
+                    hintText: 'Your name',
+                    prefixIcon: Icon(Icons.person_outline),
                   ),
-                  const SizedBox(height: 32),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 18)),
-                      icon: const Icon(Icons.add_circle_outline),
-                      label: const Text('Create Room'),
-                      onPressed: () =>
-                          _go(CreateRoomScreen(playerName: _name)),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 18)),
-                      icon: const Icon(Icons.login),
-                      label: const Text('Join Room'),
-                      onPressed: () => _go(JoinRoomScreen(playerName: _name)),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 24),
+                MenuCard(
+                  icon: Icons.add_circle_outline,
+                  title: 'Create Room',
+                  subtitle: 'Host a new game',
+                  filled: true,
+                  showArrow: true,
+                  onTap: () => _go(CreateRoomScreen(playerName: _name)),
+                ),
+                const SizedBox(height: 12),
+                MenuCard(
+                  icon: Icons.login,
+                  title: 'Join Room',
+                  subtitle: 'Enter a 6-character code',
+                  onTap: () => _go(JoinRoomScreen(playerName: _name)),
+                ),
+              ],
             ),
           ),
         ),

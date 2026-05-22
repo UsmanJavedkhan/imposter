@@ -3,6 +3,16 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'pressable_scale.dart';
 
+/// The lavender "primary CTA" button style used across the app (dark text on
+/// a light lavender fill), matching the design's Play Local / Start Game.
+ButtonStyle lavenderButtonStyle() => FilledButton.styleFrom(
+      backgroundColor: AppColors.lavender,
+      foregroundColor: AppColors.onLavender,
+      disabledBackgroundColor: AppColors.lavender.withValues(alpha: 0.4),
+      padding: const EdgeInsets.symmetric(vertical: 18),
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+    );
+
 /// The "IMPOSTER" wordmark rendered with the pink→magenta brand gradient.
 class BrandWordmark extends StatelessWidget {
   const BrandWordmark({

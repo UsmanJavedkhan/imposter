@@ -7,6 +7,7 @@ import '../../../application/online_providers.dart';
 import '../../../application/presence.dart';
 import '../../../domain/engine/imposter_rules.dart';
 import '../../widgets/gradient_background.dart';
+import '../../widgets/ui_kit.dart';
 import 'online_game_screen.dart';
 
 /// Waiting room. Shows the code and members; the host starts the game.
@@ -98,7 +99,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lobby'),
+        title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -180,8 +181,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen>
                       SizedBox(
                         width: double.infinity,
                         child: FilledButton.icon(
-                          style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16)),
+                          style: lavenderButtonStyle(),
                           icon: const Icon(Icons.play_arrow),
                           label: const Text('Start Game'),
                           onPressed: () => _start(
