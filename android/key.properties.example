@@ -1,0 +1,13 @@
+# Copy this file to `key.properties` (which is git-ignored) and fill in your
+# own values to enable signed release builds. Generate a keystore with:
+#
+#   keytool -genkeypair -v -keystore android/app/upload-keystore.jks \
+#     -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+#
+# storeFile is resolved relative to android/app/. KEEP THE KEYSTORE AND THESE
+# PASSWORDS SAFE AND BACKED UP — losing them means you can no longer publish
+# updates to an app signed with this key.
+storePassword=your-store-password
+keyPassword=your-key-password
+keyAlias=upload
+storeFile=upload-keystore.jks
