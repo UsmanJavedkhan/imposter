@@ -279,10 +279,21 @@ class RoomRepository {
       }
     }
 
-    await _room(code).update({
+    final batch = _db.batch();
+    // If the current player ran out of time without submitting, mark their
+    // slot as "passed" (empty string sentinel) so the UI can show it clearly.
+    // submitClue never writes empty strings, so this can only mean expiry.
+    if (currentIdx >= 0 && ordered[currentIdx].clue == null) {
+      batch.update(
+        _members(code).doc(ordered[currentIdx].uid),
+        {'clue': ''},
+      );
+    }
+    batch.update(_room(code), {
       'currentTurnUid': next,
       'turnDeadline': next == null ? null : _turnDeadlineFromNow(),
     });
+    await batch.commit();
   }
 
   /// HOST ONLY. Opens voting and clears everyone's previous vote.

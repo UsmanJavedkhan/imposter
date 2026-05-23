@@ -412,10 +412,18 @@ class _CluePhaseOnlineState extends ConsumerState<_CluePhaseOnline> {
                   child: Text('${i + 1}'),
                 ),
                 title: Text(isMe ? '${m.name} (you)' : m.name),
-                trailing: m.clue != null
-                    ? Chip(label: Text(m.clue!))
-                    : Text(isTurn ? 'typing…' : 'waiting',
-                        style: const TextStyle(color: Colors.white54)),
+                trailing: m.clue == null
+                    ? Text(isTurn ? 'typing…' : 'waiting',
+                        style: const TextStyle(color: Colors.white54))
+                    : m.clue!.isEmpty
+                        ? Chip(
+                            label: const Text('Passed'),
+                            backgroundColor:
+                                Colors.white.withValues(alpha: 0.08),
+                            labelStyle:
+                                const TextStyle(color: Colors.white60),
+                          )
+                        : Chip(label: Text(m.clue!)),
               );
             },
           ),
@@ -492,7 +500,7 @@ class _Countdown extends StatelessWidget {
 
 // ---- Voting ---------------------------------------------------------------
 
-class _VotingOnline extends ConsumerWidget {
+class _VotingOnline extends ConsumerStatefulWidget {
   const _VotingOnline({
     required this.code,
     required this.members,
@@ -505,13 +513,33 @@ class _VotingOnline extends ConsumerWidget {
   final bool isHost;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_VotingOnline> createState() => _VotingOnlineState();
+}
+
+class _VotingOnlineState extends ConsumerState<_VotingOnline> {
+  /// Guards against the host firing resolveVotes multiple times in flight.
+  bool _resolving = false;
+
+  @override
+  Widget build(BuildContext context) {
     final repo = ref.read(roomRepositoryProvider);
-    final alive = members.where((m) => m.isAlive).toList();
-    final me = members.where((m) => m.uid == uid).firstOrNull;
+    final alive = widget.members.where((m) => m.isAlive).toList();
+    final me = widget.members.where((m) => m.uid == widget.uid).firstOrNull;
     final myVote = me?.voteTargetId;
     final iAmAlive = me?.isAlive ?? false;
     final votesIn = alive.where((m) => m.voteTargetId != null).length;
+    final allVoted = alive.isNotEmpty && votesIn == alive.length;
+
+    // Auto-resolve once every living player has voted (host drives the write,
+    // matching the rest of the host-authoritative model).
+    if (widget.isHost && allVoted && !_resolving) {
+      _resolving = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        repo.resolveVotes(widget.code).whenComplete(() {
+          if (mounted) _resolving = false;
+        });
+      });
+    }
 
     return Column(
       children: [
@@ -534,8 +562,9 @@ class _VotingOnline extends ConsumerWidget {
                       name: m.name,
                       clue: m.clue,
                       selected: myVote == m.uid,
-                      onPressed: (iAmAlive && uid != null)
-                          ? () => repo.castVote(code, uid!, m.uid)
+                      onPressed: (iAmAlive && widget.uid != null)
+                          ? () =>
+                              repo.castVote(widget.code, widget.uid!, m.uid)
                           : null,
                     ),
                   ),
@@ -550,12 +579,15 @@ class _VotingOnline extends ConsumerWidget {
             ],
           ),
         ),
-        _HostControls(
-          isHost: isHost,
-          label: 'Reveal Results',
-          icon: Icons.gavel,
-          onPressed: () => repo.resolveVotes(code),
-          waitingText: 'Cast your vote. Waiting for the host to reveal…',
+        Padding(
+          padding: const EdgeInsets.all(12),
+          child: Text(
+            allVoted
+                ? 'Tallying votes…'
+                : 'Results show automatically once everyone has voted.',
+            style: const TextStyle(color: Colors.white70),
+            textAlign: TextAlign.center,
+          ),
         ),
       ],
     );
@@ -584,7 +616,11 @@ class _VoteButton extends StatelessWidget {
       children: [
         Text(name, style: const TextStyle(fontSize: 18)),
         Text(
-          clue == null || clue!.isEmpty ? '(no clue given)' : 'Clue: "$clue"',
+          clue == null
+              ? '(no clue given)'
+              : clue!.isEmpty
+                  ? '(passed)'
+                  : 'Clue: "$clue"',
           style: const TextStyle(fontSize: 13, fontStyle: FontStyle.italic),
         ),
       ],
