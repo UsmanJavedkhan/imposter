@@ -1,12 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../application/game_providers.dart';
 import '../widgets/gradient_background.dart';
 import '../widgets/ui_kit.dart';
 import 'online/online_menu_screen.dart';
 import 'setup_screen.dart';
 
+/// Icon used for each theme tile, keyed by the theme's id.
+IconData themeIcon(String id) {
+  switch (id) {
+    case 'animals':
+      return Icons.pets;
+    case 'food':
+      return Icons.restaurant;
+    case 'movies':
+      return Icons.movie_creation_outlined;
+    case 'sports':
+      return Icons.sports_soccer;
+    case 'countries':
+      return Icons.public;
+    case 'jobs':
+      return Icons.work_outline;
+    case 'household':
+      return Icons.chair_outlined;
+    case 'famous_people':
+      return Icons.star_outline;
+    case 'video_games':
+      return Icons.sports_esports;
+    case 'nature':
+      return Icons.park_outlined;
+    default:
+      return Icons.category_outlined;
+  }
+}
+
 /// The first screen the player sees — the "Lobby".
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   void _openSetup(BuildContext context, {String? themeName}) {
@@ -24,7 +54,8 @@ class HomeScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themesAsync = ref.watch(themesProvider);
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 20,
@@ -73,27 +104,12 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => _openSetup(context),
               ),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: MenuCard(
-                      icon: Icons.wifi,
-                      title: 'Play Online',
-                      subtitle: 'Global matchmaking',
-                      onTap: () => _openOnline(context),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: MenuCard(
-                      icon: Icons.lock_outline,
-                      title: 'Private',
-                      subtitle: 'Invite via code',
-                      accent: Colors.white70,
-                      onTap: () => _openOnline(context),
-                    ),
-                  ),
-                ],
+              MenuCard(
+                icon: Icons.wifi,
+                title: 'Play Online',
+                subtitle: 'Play with friends on other devices',
+                showArrow: true,
+                onTap: () => _openOnline(context),
               ),
               const SizedBox(height: 12),
               MenuCard(
@@ -104,36 +120,30 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => showHowToPlay(context),
               ),
               const SizedBox(height: 24),
-              const SectionLabel('Recent Themes'),
+              const SectionLabel('All Themes'),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: ThemeChipCard(
-                      icon: Icons.restaurant,
-                      label: 'Foodies',
-                      onTap: () =>
-                          _openSetup(context, themeName: 'Food & Drink'),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ThemeChipCard(
-                      icon: Icons.movie_creation_outlined,
-                      label: 'Hollywood',
-                      highlighted: true,
-                      onTap: () => _openSetup(context, themeName: 'Movies'),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ThemeChipCard(
-                      icon: Icons.rocket_launch_outlined,
-                      label: 'Sci-Fi',
-                      onTap: () => _openSetup(context, themeName: 'Video Games'),
-                    ),
-                  ),
-                ],
+              themesAsync.when(
+                loading: () => const SizedBox(
+                  height: 120,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                error: (_, _) => const SizedBox.shrink(),
+                data: (themes) => GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 1.05,
+                  children: [
+                    for (final t in themes)
+                      ThemeChipCard(
+                        icon: themeIcon(t.id),
+                        label: t.name,
+                        onTap: () => _openSetup(context, themeName: t.name),
+                      ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -210,7 +210,6 @@ class ThemeChipCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           onTap: onTap,
           child: Ink(
-            height: 100,
             decoration: BoxDecoration(
               gradient: highlighted
                   ? const LinearGradient(
@@ -230,13 +229,15 @@ class ThemeChipCard extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Icon(icon,
                     color: highlighted ? Colors.white : AppColors.cyan, size: 22),
-                const Spacer(),
                 Text(label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                        fontWeight: FontWeight.w700, fontSize: 13)),
+                        fontWeight: FontWeight.w700, fontSize: 12.5)),
               ],
             ),
           ),
