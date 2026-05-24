@@ -272,10 +272,22 @@ class RoomRepository {
     final currentIdx =
         ordered.indexWhere((m) => m.uid == room.currentTurnUid);
     String? next;
-    for (var i = currentIdx + 1; i < ordered.length; i++) {
-      if (ordered[i].isAlive) {
-        next = ordered[i].uid;
-        break;
+    if (currentIdx >= 0) {
+      for (var i = currentIdx + 1; i < ordered.length; i++) {
+        if (ordered[i].isAlive) {
+          next = ordered[i].uid;
+          break;
+        }
+      }
+    } else {
+      // The current-turn player isn't in the members list anymore (they left
+      // mid-round). Resume with the first alive player who hasn't submitted
+      // yet so we don't loop back over players who already gave their clue.
+      for (final m in ordered) {
+        if (m.isAlive && m.clue == null) {
+          next = m.uid;
+          break;
+        }
       }
     }
 

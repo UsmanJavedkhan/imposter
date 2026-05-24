@@ -52,7 +52,8 @@ class _OnlineGameScreenState extends ConsumerState<OnlineGameScreen>
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Leave game?'),
-        content: const Text('You will drop out of this round.'),
+        content: const Text(
+            'You will drop out of this round and be removed from the room.'),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
@@ -63,9 +64,16 @@ class _OnlineGameScreenState extends ConsumerState<OnlineGameScreen>
         ],
       ),
     );
-    if (leave == true && mounted) {
-      Navigator.of(context).popUntil((r) => r.isFirst);
+    if (leave != true || !mounted) return;
+    final uid = ref.read(authUidProvider).value;
+    if (uid != null) {
+      try {
+        await ref.read(roomRepositoryProvider).leave(widget.code, uid);
+      } catch (_) {
+        // Best-effort: even if Firestore is unreachable we still want to exit.
+      }
     }
+    if (mounted) Navigator.of(context).popUntil((r) => r.isFirst);
   }
 
   @override
@@ -321,10 +329,11 @@ class _CluePhaseOnlineState extends ConsumerState<_CluePhaseOnline> {
     final current =
         widget.members.where((m) => m.uid == turnUid).firstOrNull;
     final submitted = current?.clue != null;
+    final missing = current == null; // player left the room mid-turn
     final deadline = widget.room.turnDeadline;
     final expired = deadline != null && DateTime.now().isAfter(deadline);
 
-    if (submitted || expired) {
+    if (submitted || expired || missing) {
       _advancing = true;
       try {
         await ref.read(roomRepositoryProvider).advanceClueTurn(widget.code);
