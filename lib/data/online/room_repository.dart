@@ -162,6 +162,16 @@ class RoomRepository {
     await _members(code).doc(uid).delete();
   }
 
+  /// The player has peeked at their role card at least once. The host waits
+  /// for everyone to mark this before being allowed to start the clue phase.
+  Future<void> markRoleSeen(String code, String uid) async {
+    try {
+      await _members(code).doc(uid).update({'hasSeenRole': true});
+    } catch (_) {
+      // Doc may have just been deleted (player left) — ignore.
+    }
+  }
+
   /// Promotes [uid] to host. Used for host migration when the original host
   /// has disconnected/left. Firestore rules only allow this when the current
   /// host is genuinely absent, so concurrent claims resolve to a single host.
@@ -204,6 +214,8 @@ class RoomRepository {
             : null,
         'themeName': room.themeName,
       });
+      // Fresh role reveal — nobody has peeked their card yet.
+      batch.update(_members(code).doc(uid), {'hasSeenRole': false});
     }
 
     // Host-only copy so the host can detect winners later.

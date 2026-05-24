@@ -113,6 +113,10 @@ class OnlineMember {
   /// submitted yet, or cleared between rounds).
   final String? clue;
 
+  /// True once this player has peeked at their role card during role reveal.
+  /// Reset at the start of each game so the host can wait for everyone.
+  final bool hasSeenRole;
+
   /// When the player joined — used to order players (e.g. clue turn order).
   final DateTime? joinedAt;
 
@@ -124,6 +128,7 @@ class OnlineMember {
     required this.isHost,
     required this.voteTargetId,
     required this.clue,
+    required this.hasSeenRole,
     required this.joinedAt,
   });
 
@@ -138,6 +143,7 @@ class OnlineMember {
       isHost: d['isHost'] as bool? ?? false,
       voteTargetId: d['voteTargetId'] as String?,
       clue: d['clue'] as String?,
+      hasSeenRole: d['hasSeenRole'] as bool? ?? false,
       joinedAt: ts is Timestamp ? ts.toDate() : null,
     );
   }

@@ -149,7 +149,9 @@ class _HostControls extends StatelessWidget {
   final bool isHost;
   final String label;
   final IconData icon;
-  final VoidCallback onPressed;
+  /// When null, the host's button is shown but disabled (e.g. the host is
+  /// waiting on a prerequisite like "all players have peeked their card").
+  final VoidCallback? onPressed;
   final String waitingText;
 
   @override
@@ -157,7 +159,9 @@ class _HostControls extends StatelessWidget {
     if (!isHost) {
       return Padding(
         padding: const EdgeInsets.all(12),
-        child: Text(waitingText, style: const TextStyle(color: Colors.white70)),
+        child: Text(waitingText,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white70)),
       );
     }
     return Padding(
@@ -175,6 +179,47 @@ class _HostControls extends StatelessWidget {
   }
 }
 
+/// A compact roster shown on the role-reveal screen so everyone can see who's
+/// already peeked their card. Drives the gating of the host's Start button.
+class _RoleSeenRoster extends StatelessWidget {
+  const _RoleSeenRoster({required this.members, required this.selfUid});
+
+  final List<OnlineMember> members;
+  final String? selfUid;
+
+  @override
+  Widget build(BuildContext context) {
+    if (members.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 6,
+        runSpacing: 6,
+        children: [
+          for (final m in members)
+            Chip(
+              avatar: Icon(
+                m.hasSeenRole ? Icons.check_circle : Icons.hourglass_empty,
+                size: 18,
+                color: m.hasSeenRole
+                    ? Colors.greenAccent
+                    : Colors.white54,
+              ),
+              label: Text(m.uid == selfUid ? '${m.name} (you)' : m.name),
+              backgroundColor: m.hasSeenRole
+                  ? Colors.green.withValues(alpha: 0.18)
+                  : Colors.white.withValues(alpha: 0.06),
+              labelStyle: TextStyle(
+                color: m.hasSeenRole ? Colors.white : Colors.white70,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 // ---- Role reveal ----------------------------------------------------------
 
 class _RoleRevealOnline extends ConsumerWidget {
@@ -185,7 +230,12 @@ class _RoleRevealOnline extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final roleAsync = ref.watch(myRoleStreamProvider(code));
+    final members = ref.watch(membersStreamProvider(code)).value ?? const [];
+    final uid = ref.watch(authUidProvider).value;
     final repo = ref.read(roomRepositoryProvider);
+
+    final seenCount = members.where((m) => m.hasSeenRole).length;
+    final everyoneReady = members.isNotEmpty && seenCount == members.length;
 
     return Column(
       children: [
@@ -205,6 +255,9 @@ class _RoleRevealOnline extends ConsumerWidget {
                   padding: const EdgeInsets.all(24),
                   child: FlipCard(
                     frontColor: accent.withValues(alpha: 0.12),
+                    onFirstPeek: uid == null
+                        ? null
+                        : () => repo.markRoleSeen(code, uid),
                     back: const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -261,12 +314,18 @@ class _RoleRevealOnline extends ConsumerWidget {
             ),
           ),
         ),
+        _RoleSeenRoster(members: members, selfUid: uid),
         _HostControls(
           isHost: isHost,
-          label: 'Start Clues',
+          label: everyoneReady
+              ? 'Start Clues'
+              : 'Start Clues ($seenCount/${members.length} ready)',
           icon: Icons.record_voice_over,
-          onPressed: () => repo.beginCluePhase(code),
-          waitingText: 'Remember your role. Waiting for the host…',
+          onPressed: everyoneReady ? () => repo.beginCluePhase(code) : null,
+          waitingText: everyoneReady
+              ? 'Waiting for the host to start clues…'
+              : 'Waiting for everyone to peek their card '
+                  '($seenCount/${members.length} ready)…',
         ),
       ],
     );
