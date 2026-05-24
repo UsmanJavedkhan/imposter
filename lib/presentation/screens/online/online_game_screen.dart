@@ -200,12 +200,17 @@ class _RoleRevealOnline extends ConsumerWidget {
                     back: const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.visibility,
+                        Icon(Icons.touch_app,
                             size: 64, color: Colors.white70),
                         SizedBox(height: 16),
-                        Text('Tap to reveal your role',
+                        Text('Hold to peek at your role',
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 18)),
+                        SizedBox(height: 6),
+                        Text('Release to hide it again',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 13, color: Colors.white60)),
                       ],
                     ),
                     front: Column(

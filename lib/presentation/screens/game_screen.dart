@@ -132,10 +132,17 @@ class _RoleCardState extends State<_RoleCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _flip = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 450),
-  );
+    duration: const Duration(milliseconds: 350),
+    reverseDuration: const Duration(milliseconds: 250),
+  )..addListener(() {
+      // The player has peeked at least once — unlock the "Hide & Pass" button
+      // even after they release and the card flips back to the cover.
+      if (!_hasPeeked && _flip.value > 0.5) {
+        setState(() => _hasPeeked = true);
+      }
+    });
 
-  bool get _revealed => _flip.value > 0.5;
+  bool _hasPeeked = false;
 
   @override
   void dispose() {
@@ -143,15 +150,15 @@ class _RoleCardState extends State<_RoleCard>
     super.dispose();
   }
 
-  void _reveal() {
-    if (!_flip.isAnimating && _flip.value == 0) _flip.forward();
-  }
+  void _press() => _flip.forward();
+  void _release() => _flip.reverse();
 
   @override
   Widget build(BuildContext context) {
     final isImposter = widget.player.isImposter;
 
-    // Background tint stays neutral until revealed, then hints the role.
+    // Background tint stays neutral until the card is held open, then hints
+    // at the role; it eases back to neutral as the card flips closed.
     return AnimatedBuilder(
       animation: _flip,
       builder: (context, _) {
@@ -178,8 +185,10 @@ class _RoleCardState extends State<_RoleCard>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: _revealed ? null : _reveal,
+                      Listener(
+                        onPointerDown: (_) => _press(),
+                        onPointerUp: (_) => _release(),
+                        onPointerCancel: (_) => _release(),
                         child: Transform(
                           alignment: Alignment.center,
                           transform: Matrix4.identity()
@@ -197,15 +206,23 @@ class _RoleCardState extends State<_RoleCard>
                         ),
                       ),
                       const SizedBox(height: 40),
-                      if (_revealed)
+                      if (_hasPeeked)
                         FilledButton.icon(
-                          icon: const Icon(Icons.visibility_off),
-                          label: const Text('Hide & Pass'),
+                          icon: const Icon(Icons.arrow_forward),
+                          label: const Text('Pass to Next'),
                           onPressed: widget.onDone,
                         )
                       else
-                        Text('Tap the card to reveal',
-                            style: Theme.of(context).textTheme.titleMedium),
+                        Column(
+                          children: [
+                            Text('Hold the card to peek',
+                                style:
+                                    Theme.of(context).textTheme.titleMedium),
+                            const SizedBox(height: 4),
+                            const Text('Release to hide it again',
+                                style: TextStyle(color: Colors.white60)),
+                          ],
+                        ),
                     ],
                   ),
                 ),
