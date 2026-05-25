@@ -1,5 +1,5 @@
 name: imposter_game
-description: "A new Flutter project."
+description: "Imposter — a party word game of deception and heat. Pass-and-play locally or share a room code to play online with friends."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

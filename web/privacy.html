@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Imposter — Privacy Policy</title>
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.55;
+      color: #f5efe7;
+      background: #15100A;
+    }
+    h1 { color: #F97316; margin-bottom: 4px; }
+    .updated { color: #b9a994; font-size: 14px; margin-top: 0; }
+    h2 { color: #FBBF24; margin-top: 32px; font-size: 18px; }
+    a { color: #22D3EE; }
+    code { background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 4px; }
+    ul { padding-left: 22px; }
+    li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy — Imposter</h1>
+  <p class="updated">Last updated: 25 May 2026</p>
+
+  <p>
+    Imposter ("the app") is a party word game published by the Imposter
+    development team. This page explains what data the app handles, why,
+    and your choices. We try to collect as little as possible.
+  </p>
+
+  <h2>What we collect</h2>
+  <ul>
+    <li>
+      <strong>Anonymous account ID.</strong> When you open the app we sign
+      you in to Firebase Authentication as an <em>anonymous</em> user. This
+      gives your device a random, opaque ID so the server can attach you
+      to a game room. We do not ask for your email, phone number, name,
+      or any other identifier.
+    </li>
+    <li>
+      <strong>The display name you type in.</strong> You choose a name
+      ("Alex", "Sam", etc.) so other players in your room can see who is
+      who. This is stored only while the room exists and is visible only
+      to other players in the same room.
+    </li>
+    <li>
+      <strong>Game-state data.</strong> While a room is active we store
+      the room code, theme, current phase, clue text you type, votes you
+      cast, and whether you have peeked your role card. This lives in
+      Google Firestore and is shared in real time with the other players
+      in the same room. It is not used for advertising or analytics.
+    </li>
+    <li>
+      <strong>No tracking, no analytics, no ads.</strong> The app contains
+      no third-party advertising SDKs, no analytics SDKs (Google Analytics,
+      Firebase Analytics, etc.), and does not sell or share data with
+      anyone.
+    </li>
+  </ul>
+
+  <h2>Who can see what</h2>
+  <ul>
+    <li>Players in your room see your chosen display name and your clue
+        text. They cannot see your secret role until the game reveals it.</li>
+    <li>The game host's device sees the role assignments because role
+        assignment runs on the host (security rules prevent other players
+        from reading the same data).</li>
+    <li>Imposter developers and Google (as our hosting provider) have
+        operational access to the Firestore database for the purpose of
+        running the service. We do not inspect individual rooms.</li>
+  </ul>
+
+  <h2>How long we keep it</h2>
+  <p>
+    Game rooms are best-effort and short-lived. When a player leaves we
+    delete their member record from the room. When the game ends the
+    room remains for a short window so players can see the result, then
+    becomes inactive. We do not maintain long-term player profiles.
+  </p>
+
+  <h2>Children</h2>
+  <p>
+    The app is intended for a general audience. It does not knowingly
+    collect personal information from children under 13. Because the
+    sign-in is anonymous and we collect no PII, there is nothing for
+    parents to request deletion of beyond the room data, which expires
+    on its own.
+  </p>
+
+  <h2>Your choices</h2>
+  <ul>
+    <li>You can leave any room at any time by tapping the leave icon — we
+        delete your member record immediately.</li>
+    <li>You can clear the app's data from your device's settings to
+        regenerate your anonymous ID.</li>
+    <li>To request deletion of any room data still in Firestore, contact
+        us at the email below.</li>
+  </ul>
+
+  <h2>Third-party services</h2>
+  <ul>
+    <li><strong>Google Firebase</strong> (Authentication, Firestore,
+        Hosting) — see
+        <a href="https://firebase.google.com/support/privacy">Firebase Privacy</a>.</li>
+  </ul>
+
+  <h2>Changes to this policy</h2>
+  <p>
+    If we change this policy we will update the "Last updated" date
+    above and post the new version at this URL.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions or deletion requests:
+    <a href="mailto:imposter.game.support@gmail.com">imposter.game.support@gmail.com</a>
+  </p>
+</body>
+</html>
