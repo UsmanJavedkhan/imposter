@@ -97,7 +97,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   Future<void> _pickTheme(List<GameTheme> themes) async {
     final picked = await showModalBottomSheet<GameTheme>(
       context: context,
-      backgroundColor: const Color(0xFF1A1340),
+      // Background is themed via BottomSheetThemeData so it stays in palette.
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),

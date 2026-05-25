@@ -126,5 +126,19 @@ ThemeData buildAppTheme() {
     chipTheme: base.chipTheme.copyWith(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: AppColors.bgMid,
+      surfaceTintColor: Colors.transparent,
+      modalBackgroundColor: AppColors.bgMid,
+      modalBarrierColor: Colors.black.withValues(alpha: 0.55),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: AppColors.bgMid,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
   );
 }
