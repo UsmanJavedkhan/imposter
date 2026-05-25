@@ -3,13 +3,20 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'pressable_scale.dart';
 
-/// The lavender "primary CTA" button style used across the app (dark text on
-/// a light lavender fill), matching the design's Play Local / Start Game.
+/// The "primary CTA" button style used across the app (white text on the
+/// brand-orange fill), matching the design's Play Local / Start Game cards.
+///
+/// Padding is intentionally generous on the horizontal axis so content-sized
+/// buttons (Start Clues, Pass to Next, Next Round, …) read as proper pill
+/// CTAs instead of snug labels. Full-width buttons (wrapped in a SizedBox
+/// width: infinity) ignore the extra horizontal padding, so this is safe.
 ButtonStyle lavenderButtonStyle() => FilledButton.styleFrom(
       backgroundColor: AppColors.lavender,
       foregroundColor: AppColors.onLavender,
       disabledBackgroundColor: AppColors.lavender.withValues(alpha: 0.4),
-      padding: const EdgeInsets.symmetric(vertical: 18),
+      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 32),
+      minimumSize: const Size(160, 0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
 
