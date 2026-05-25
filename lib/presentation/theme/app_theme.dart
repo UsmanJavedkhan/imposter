@@ -26,21 +26,24 @@ class AppColors {
   static const List<Color> brandGradient = [magentaA, magentaB];
   static const Color labelPink = Color(0xFFFBBF24); // section label = amber
 
-  // Cream "neutral" fill used for primary CTAs, with dark text on top.
-  // (Constant names kept as `lavender` / `onLavender` so existing call sites
+  // Orange primary-CTA fill (matches the mockup's "Start Game" / "Play Local"
+  // / "Pass to Next" buttons), with crisp white text on top.
+  // Constant names kept as `lavender` / `onLavender` so existing call sites
   // continue to work — the colours have just been re-skinned to the new
-  // palette's neutral.)
-  static const Color lavender = Color(0xFFFFFBEB); // palette neutral (cream)
-  static const Color onLavender = Color(0xFF2B1A05); // deep warm brown text
+  // palette's primary.
+  static const Color lavender = Color(0xFFF97316); // palette primary (orange)
+  static const Color onLavender = Color(0xFFFFFFFF); // white text on orange
 
-  // Card surfaces.
-  static Color cardFill = Colors.white.withValues(alpha: 0.05);
-  static Color cardBorder = Colors.white.withValues(alpha: 0.09);
+  // Card surfaces — slightly warmer alpha so the dark background reads
+  // charcoal-with-warmth instead of cool grey.
+  static Color cardFill = Colors.white.withValues(alpha: 0.04);
+  static Color cardBorder = Colors.white.withValues(alpha: 0.08);
 
-  // Background gradient stops — deep navy that complements warm accents.
-  static const Color bgTop = Color(0xFF0B1220);
-  static const Color bgMid = Color(0xFF14233F);
-  static const Color bgBottom = Color(0xFF1F3458);
+  // Background gradient stops — near-black with a warm undertone so orange
+  // accents glow against it.
+  static const Color bgTop = Color(0xFF0A0805);
+  static const Color bgMid = Color(0xFF15100A);
+  static const Color bgBottom = Color(0xFF1E1610);
 
   /// Default full-screen background gradient colours.
   static const List<Color> background = [bgTop, bgMid, bgBottom];
@@ -68,7 +71,7 @@ ThemeData buildAppTheme() {
   ).copyWith(
     secondary: AppColors.cyan,
     tertiary: AppColors.amberHint,
-    surface: const Color(0xFF142037),
+    surface: const Color(0xFF15100A),
   );
 
   final base = ThemeData(
