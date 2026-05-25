@@ -12,6 +12,7 @@ import '../theme/app_theme.dart';
 import '../widgets/gradient_background.dart';
 import '../widgets/hint_chip.dart';
 import '../widgets/phase_switcher.dart';
+import '../widgets/ui_kit.dart';
 import '../widgets/win_confetti.dart';
 
 /// Shows the right view for the current game phase. Because the engine drives
@@ -171,7 +172,10 @@ class _RoleCardState extends State<_RoleCard>
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('Pass to ${widget.player.name}'),
+            title: Padding(
+    padding: const EdgeInsets.only(top: 16.0), // Adjust the padding values as needed
+    child: Text('Pass to ${widget.player.name}'),
+  ),
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
           ),
@@ -208,6 +212,10 @@ class _RoleCardState extends State<_RoleCard>
                       const SizedBox(height: 40),
                       if (_hasPeeked)
                         FilledButton.icon(
+                          // Same solid-orange + white text as the home
+                          // screen's "Play Local" card, so the brand CTA
+                          // colour is consistent across the app.
+                          style: lavenderButtonStyle(),
                           icon: const Icon(Icons.arrow_forward),
                           label: const Text('Pass to Next'),
                           onPressed: widget.onDone,
