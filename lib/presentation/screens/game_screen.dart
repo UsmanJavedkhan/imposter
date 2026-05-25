@@ -83,6 +83,7 @@ class _RoleRevealView extends ConsumerWidget {
                     textAlign: TextAlign.center),
                 const SizedBox(height: 32),
                 FilledButton.icon(
+                  style: lavenderButtonStyle(),
                   icon: const Icon(Icons.record_voice_over),
                   label: const Text('Start Clues'),
                   onPressed: controller.beginClues,
@@ -372,8 +373,7 @@ class _ClueView extends ConsumerWidget {
             child: SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
-                style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16)),
+                style: lavenderButtonStyle(),
                 icon: const Icon(Icons.how_to_vote),
                 label: const Text('Everyone gave a clue — Vote'),
                 onPressed: controller.openVoting,
@@ -523,12 +523,19 @@ class _ResultView extends ConsumerWidget {
                 _RoleSummary(game: game),
                 const SizedBox(height: 24),
                 FilledButton.icon(
+                  style: lavenderButtonStyle(),
                   icon: const Icon(Icons.replay),
                   label: const Text('Play Again — same players'),
                   onPressed: controller.playAgainSameSetup,
                 ),
                 const SizedBox(height: 8),
+                // Secondary action — kept as a text button so it doesn't
+                // compete with "Play Again", but coloured with the brand
+                // orange so it still reads as part of the same palette.
                 TextButton.icon(
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.lavender,
+                  ),
                   icon: const Icon(Icons.home),
                   label: const Text('Back to Home'),
                   onPressed: () {
@@ -538,6 +545,7 @@ class _ResultView extends ConsumerWidget {
                 ),
               ] else
                 FilledButton.icon(
+                  style: lavenderButtonStyle(),
                   icon: const Icon(Icons.arrow_forward),
                   label: const Text('Next Round'),
                   onPressed: controller.nextRound,
