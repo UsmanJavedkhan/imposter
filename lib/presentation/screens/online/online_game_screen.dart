@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../application/game_providers.dart';
 import '../../../application/online_providers.dart';
 import '../../../application/presence.dart';
 import '../../../data/online/online_models.dart';
@@ -120,8 +121,11 @@ class _OnlineGameScreenState extends ConsumerState<OnlineGameScreen>
                     code: code, members: members, uid: uid, isHost: isHost),
                 GamePhase.reveal => _RevealOnline(
                     room: room, members: members, isHost: isHost, code: code),
-                GamePhase.gameOver =>
-                  _GameOverOnline(room: room, members: members),
+                GamePhase.gameOver => _GameOverOnline(
+                    room: room,
+                    members: members,
+                    isHost: isHost,
+                    code: code),
                 GamePhase.lobby =>
                   const Center(child: CircularProgressIndicator()),
               };
@@ -782,13 +786,57 @@ class _RevealOnline extends ConsumerWidget {
 
 // ---- Game over ------------------------------------------------------------
 
-class _GameOverOnline extends StatelessWidget {
-  const _GameOverOnline({required this.room, required this.members});
+class _GameOverOnline extends ConsumerStatefulWidget {
+  const _GameOverOnline({
+    required this.room,
+    required this.members,
+    required this.isHost,
+    required this.code,
+  });
   final OnlineRoom room;
   final List<OnlineMember> members;
+  final bool isHost;
+  final String code;
+
+  @override
+  ConsumerState<_GameOverOnline> createState() => _GameOverOnlineState();
+}
+
+class _GameOverOnlineState extends ConsumerState<_GameOverOnline> {
+  /// Guards against the host firing startGame twice in flight while the
+  /// Firestore write is pending.
+  bool _restarting = false;
+
+  Future<void> _playAgain() async {
+    if (_restarting) return;
+    setState(() => _restarting = true);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final themes = await ref.read(themesProvider.future);
+      final theme = themes.firstWhere(
+        (t) => t.name == widget.room.themeName,
+        orElse: () => themes.first,
+      );
+      final word = ref.read(wordRepositoryProvider).randomWord(theme);
+      await ref.read(roomRepositoryProvider).startGame(
+            code: widget.code,
+            secretWord: word,
+            hintWord: theme.hintFor(word),
+          );
+      // Phase change pushes everyone back to role-reveal automatically.
+    } catch (e) {
+      if (mounted) {
+        messenger.showSnackBar(SnackBar(content: Text('Failed to restart: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => _restarting = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final room = widget.room;
+    final members = widget.members;
     final civiliansWon = room.winner == Role.civilian;
     final nameById = {for (final m in members) m.uid: m.name};
 
@@ -846,7 +894,30 @@ class _GameOverOnline extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            FilledButton.icon(
+            if (widget.isHost) ...[
+              FilledButton.icon(
+                icon: _restarting
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Icon(Icons.replay),
+                label: const Text('Play Again — same players'),
+                onPressed: _restarting ? null : _playAgain,
+              ),
+              const SizedBox(height: 8),
+            ] else
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Text(
+                  'The host can start another round with the same players.',
+                  style: TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            TextButton.icon(
               icon: const Icon(Icons.home),
               label: const Text('Back to Home'),
               onPressed: () =>

@@ -214,8 +214,15 @@ class RoomRepository {
             : null,
         'themeName': room.themeName,
       });
-      // Fresh role reveal — nobody has peeked their card yet.
-      batch.update(_members(code).doc(uid), {'hasSeenRole': false});
+      // Fresh role reveal — nobody has peeked their card yet. Also reset the
+      // per-round member state so this method works both for the first start
+      // and for a "play again" restart from the game-over screen.
+      batch.update(_members(code).doc(uid), {
+        'hasSeenRole': false,
+        'isAlive': true,
+        'clue': null,
+        'voteTargetId': null,
+      });
     }
 
     // Host-only copy so the host can detect winners later.

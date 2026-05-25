@@ -115,6 +115,25 @@ class GameController extends Notifier<GameSession> {
     state = const GameSession();
   }
 
+  /// Restart with the same players, theme, and imposter count. Picks a new
+  /// secret word (honouring the "avoid recent repeats" rule) and reassigns
+  /// roles randomly.
+  Future<void> playAgainSameSetup() async {
+    final g = _game;
+    if (g == null) return;
+    final themes = await ref.read(themesProvider.future);
+    final theme = themes.firstWhere(
+      (t) => t.name == g.config.themeName,
+      orElse: () => themes.first,
+    );
+    final names = g.players.map((p) => p.name).toList();
+    startLocalGame(
+      names: names,
+      theme: theme,
+      imposterCount: g.config.imposterCount,
+    );
+  }
+
   void _rememberWord(String word) {
     _recentWords.add(word);
     // Keep the recent list small so we don't block too many words.

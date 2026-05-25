@@ -515,6 +515,12 @@ class _ResultView extends ConsumerWidget {
                 _RoleSummary(game: game),
                 const SizedBox(height: 24),
                 FilledButton.icon(
+                  icon: const Icon(Icons.replay),
+                  label: const Text('Play Again — same players'),
+                  onPressed: controller.playAgainSameSetup,
+                ),
+                const SizedBox(height: 8),
+                TextButton.icon(
                   icon: const Icon(Icons.home),
                   label: const Text('Back to Home'),
                   onPressed: () {
