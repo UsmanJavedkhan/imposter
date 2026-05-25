@@ -382,12 +382,26 @@ class _CluePhaseOnlineState extends ConsumerState<_CluePhaseOnline> {
     super.dispose();
   }
 
-  /// HOST ONLY. Advances the turn once the current player has submitted a clue
-  /// or their countdown has run out.
+  /// HOST ONLY. Advances the turn once the current player has submitted a
+  /// clue or their countdown has run out. When every alive player has given
+  /// their clue (currentTurnUid is null) the host also auto-opens voting so
+  /// the round doesn't sit waiting for a human to press a button.
   Future<void> _maybeAdvance() async {
     if (!widget.isHost || _advancing) return;
     final turnUid = widget.room.currentTurnUid;
-    if (turnUid == null) return;
+
+    if (turnUid == null) {
+      // All clues are in — flip the phase to voting without waiting for a
+      // host button press. The widget swaps to _VotingOnline immediately
+      // after the write commits, so this only fires once.
+      _advancing = true;
+      try {
+        await ref.read(roomRepositoryProvider).openVoting(widget.code);
+      } finally {
+        _advancing = false;
+      }
+      return;
+    }
 
     final current =
         widget.members.where((m) => m.uid == turnUid).firstOrNull;
@@ -433,7 +447,6 @@ class _CluePhaseOnlineState extends ConsumerState<_CluePhaseOnline> {
 
   @override
   Widget build(BuildContext context) {
-    final repo = ref.read(roomRepositoryProvider);
     final room = widget.room;
     final ordered = widget.members.where((m) => m.isAlive).toList();
     final turnUid = room.currentTurnUid;
@@ -536,14 +549,15 @@ class _CluePhaseOnlineState extends ConsumerState<_CluePhaseOnline> {
             child: Text('Wait for your turn…',
                 style: TextStyle(color: Colors.white70)),
           ),
-        _HostControls(
-          isHost: widget.isHost,
-          label: 'Open Voting',
-          icon: Icons.how_to_vote,
-          onPressed: () => repo.openVoting(widget.code),
-          waitingText: allCluesIn
-              ? 'Waiting for the host to open voting…'
-              : 'Waiting for clues…',
+        // Voting opens automatically the moment the last clue lands, so no
+        // host button here — just a status line.
+        Padding(
+          padding: const EdgeInsets.all(12),
+          child: Text(
+            allCluesIn ? 'Opening voting…' : 'Waiting for clues…',
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white70),
+          ),
         ),
       ],
     );
