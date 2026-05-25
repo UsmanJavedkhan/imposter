@@ -2,46 +2,54 @@ import 'package:flutter/material.dart';
 
 /// Central palette + theme for the app.
 ///
-/// A fresh "midnight party" look: a deep indigo→violet background with a
-/// violet primary, electric-cyan secondary, rose for the imposter and mint
-/// for civilians / wins.
+/// Warm sunrise palette over a deep navy backdrop:
+///   • primary  #F97316 (orange) — brand CTA accent
+///   • amber    #FBBF24         — hint / highlight / section label
+///   • cyan     #22D3EE         — info / selection accent
+///   • neutral  #FFFBEB (cream) — primary CTA fill (dark text on top)
+///
+/// Imposter / civilian retain rose / mint so the role colors still read as
+/// "bad" and "good" at a glance.
 class AppColors {
   AppColors._();
 
   // Brand accents
-  static const Color primary = Color(0xFF8B6CFF); // violet
-  static const Color cyan = Color(0xFF22D3EE); // electric cyan
-  static const Color imposter = Color(0xFFFF5C7A); // rose
-  static const Color civilian = Color(0xFF34E0A1); // mint
-  static const Color amberHint = Color(0xFFFFC857);
+  static const Color primary = Color(0xFFF97316); // orange (palette primary)
+  static const Color cyan = Color(0xFF22D3EE); // cyan (palette tertiary)
+  static const Color imposter = Color(0xFFFF5C7A); // rose (semantic)
+  static const Color civilian = Color(0xFF34E0A1); // mint (semantic)
+  static const Color amberHint = Color(0xFFFBBF24); // amber (palette secondary)
 
-  // Brand wordmark gradient (pink → magenta) and section-label pink.
-  static const Color magentaA = Color(0xFFFF5BA6);
-  static const Color magentaB = Color(0xFFB15CFF);
+  // Brand wordmark gradient (orange → amber) and section label.
+  static const Color magentaA = Color(0xFFF97316); // brand orange
+  static const Color magentaB = Color(0xFFFBBF24); // brand amber
   static const List<Color> brandGradient = [magentaA, magentaB];
-  static const Color labelPink = Color(0xFFE869BE);
+  static const Color labelPink = Color(0xFFFBBF24); // section label = amber
 
-  // Light "lavender" fill used for primary CTAs, with dark text on top.
-  static const Color lavender = Color(0xFFE9D5FF);
-  static const Color onLavender = Color(0xFF2A1248);
+  // Cream "neutral" fill used for primary CTAs, with dark text on top.
+  // (Constant names kept as `lavender` / `onLavender` so existing call sites
+  // continue to work — the colours have just been re-skinned to the new
+  // palette's neutral.)
+  static const Color lavender = Color(0xFFFFFBEB); // palette neutral (cream)
+  static const Color onLavender = Color(0xFF2B1A05); // deep warm brown text
 
   // Card surfaces.
   static Color cardFill = Colors.white.withValues(alpha: 0.05);
   static Color cardBorder = Colors.white.withValues(alpha: 0.09);
 
-  // Background gradient stops (dark).
-  static const Color bgTop = Color(0xFF120A2E);
-  static const Color bgMid = Color(0xFF2A1A66);
-  static const Color bgBottom = Color(0xFF4A1E8A);
+  // Background gradient stops — deep navy that complements warm accents.
+  static const Color bgTop = Color(0xFF0B1220);
+  static const Color bgMid = Color(0xFF14233F);
+  static const Color bgBottom = Color(0xFF1F3458);
 
   /// Default full-screen background gradient colours.
   static const List<Color> background = [bgTop, bgMid, bgBottom];
 
-  /// Tint used behind the imposter reveal.
+  /// Tint used behind the imposter reveal (warm rose, harmonised with orange).
   static const List<Color> imposterBackground = [
-    Color(0xFF2E0A1E),
-    Color(0xFF5E163A),
-    Color(0xFF7A1C45),
+    Color(0xFF2A0A12),
+    Color(0xFF5C1620),
+    Color(0xFF7A1C2E),
   ];
 
   /// Tint used behind a civilian / winning reveal.
@@ -59,8 +67,8 @@ ThemeData buildAppTheme() {
     brightness: Brightness.dark,
   ).copyWith(
     secondary: AppColors.cyan,
-    tertiary: AppColors.imposter,
-    surface: const Color(0xFF1A1340),
+    tertiary: AppColors.amberHint,
+    surface: const Color(0xFF142037),
   );
 
   final base = ThemeData(
