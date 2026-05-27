@@ -45,9 +45,12 @@ class _OnlineMenuScreenState extends ConsumerState<OnlineMenuScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
         title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
       ),
-      extendBodyBehindAppBar: true,
       body: GradientBackground(
         child: SafeArea(
           child: auth.when(
@@ -56,29 +59,42 @@ class _OnlineMenuScreenState extends ConsumerState<OnlineMenuScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text('Could not connect to the server:\n$e',
-                    textAlign: TextAlign.center),
+                    textAlign: TextAlign.center,
+                    style:
+                        const TextStyle(color: AppColors.textPrimary)),
               ),
             ),
             data: (_) => ListView(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
               children: [
                 Text('Play Online',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineMedium
-                        ?.copyWith(fontWeight: FontWeight.w800)),
-                const SizedBox(height: 4),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.textPrimary)),
+                const SizedBox(height: 2),
                 const Text('Play with friends on other devices',
-                    style: TextStyle(color: Colors.white60)),
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 14)),
                 const SizedBox(height: 24),
-                const SectionLabel('Your Name', color: AppColors.cyan),
+                Row(
+                  children: const [
+                    Icon(Icons.person_outline,
+                        color: AppColors.cyan, size: 18),
+                    SizedBox(width: 6),
+                    SectionLabel('Your Name'),
+                  ],
+                ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
+                  style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w600),
                   decoration: const InputDecoration(
                     hintText: 'Your name',
-                    prefixIcon: Icon(Icons.person_outline),
+                    prefixIcon: Icon(Icons.person_outline,
+                        color: AppColors.textSecondary),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -86,6 +102,7 @@ class _OnlineMenuScreenState extends ConsumerState<OnlineMenuScreen> {
                   icon: Icons.add_circle_outline,
                   title: 'Create Room',
                   subtitle: 'Host a new game',
+                  accent: AppColors.primary,
                   filled: true,
                   showArrow: true,
                   onTap: () => _go(CreateRoomScreen(playerName: _name)),
@@ -95,6 +112,8 @@ class _OnlineMenuScreenState extends ConsumerState<OnlineMenuScreen> {
                   icon: Icons.login,
                   title: 'Join Room',
                   subtitle: 'Enter a 6-character code',
+                  accent: AppColors.cyan,
+                  showArrow: true,
                   onTap: () => _go(JoinRoomScreen(playerName: _name)),
                 ),
               ],

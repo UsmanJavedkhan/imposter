@@ -86,23 +86,25 @@ class _OnlineGameScreenState extends ConsumerState<OnlineGameScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Imposter — Online'),
+        title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: AppColors.primary),
             tooltip: 'Leave game',
             onPressed: _confirmLeave,
           ),
         ],
       ),
-      extendBodyBehindAppBar: true,
       body: GradientBackground(
         child: SafeArea(
           child: roomAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('Error: $e')),
+            error: (e, _) => Center(
+              child: Text('Error: $e',
+                  style: const TextStyle(color: AppColors.textPrimary)),
+            ),
             data: (room) {
               final members = membersAsync.value ?? const [];
               // Keep a host alive even if the original one disappears.
@@ -165,7 +167,7 @@ class _HostControls extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Text(waitingText,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.white70)),
+            style: const TextStyle(color: AppColors.textSecondary)),
       );
     }
     return Padding(
@@ -207,15 +209,23 @@ class _RoleSeenRoster extends StatelessWidget {
                 m.hasSeenRole ? Icons.check_circle : Icons.hourglass_empty,
                 size: 18,
                 color: m.hasSeenRole
-                    ? Colors.greenAccent
-                    : Colors.white54,
+                    ? AppColors.civilian
+                    : AppColors.textTertiary,
               ),
               label: Text(m.uid == selfUid ? '${m.name} (you)' : m.name),
               backgroundColor: m.hasSeenRole
-                  ? Colors.green.withValues(alpha: 0.18)
-                  : Colors.white.withValues(alpha: 0.06),
+                  ? AppColors.civilian.withValues(alpha: 0.12)
+                  : AppColors.bgMid,
+              side: BorderSide(
+                color: m.hasSeenRole
+                    ? AppColors.civilian.withValues(alpha: 0.5)
+                    : AppColors.cardBorder,
+              ),
               labelStyle: TextStyle(
-                color: m.hasSeenRole ? Colors.white : Colors.white70,
+                color: m.hasSeenRole
+                    ? AppColors.textPrimary
+                    : AppColors.textSecondary,
+                fontWeight: FontWeight.w700,
               ),
             ),
         ],
@@ -266,16 +276,20 @@ class _RoleRevealOnline extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.touch_app,
-                            size: 64, color: Colors.white70),
+                            size: 64, color: AppColors.textSecondary),
                         SizedBox(height: 16),
                         Text('Hold to peek at your role',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 18)),
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w800)),
                         SizedBox(height: 6),
                         Text('Release to hide it again',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 13, color: Colors.white60)),
+                                fontSize: 13,
+                                color: AppColors.textSecondary)),
                       ],
                     ),
                     front: Column(
@@ -498,22 +512,43 @@ class _CluePhaseOnlineState extends ConsumerState<_CluePhaseOnline> {
               final isMe = m.uid == widget.uid;
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: isTurn ? Colors.amber.shade700 : null,
-                  child: Text('${i + 1}'),
+                  backgroundColor: isTurn
+                      ? AppColors.amberHint.withValues(alpha: 0.2)
+                      : AppColors.cyan.withValues(alpha: 0.12),
+                  foregroundColor:
+                      isTurn ? AppColors.amberHint : AppColors.cyan,
+                  child: Text('${i + 1}',
+                      style: const TextStyle(fontWeight: FontWeight.w800)),
                 ),
-                title: Text(isMe ? '${m.name} (you)' : m.name),
+                title: Text(isMe ? '${m.name} (you)' : m.name,
+                    style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w700)),
                 trailing: m.clue == null
                     ? Text(isTurn ? 'typing…' : 'waiting',
-                        style: const TextStyle(color: Colors.white54))
+                        style:
+                            const TextStyle(color: AppColors.textTertiary))
                     : m.clue!.isEmpty
                         ? Chip(
                             label: const Text('Passed'),
-                            backgroundColor:
-                                Colors.white.withValues(alpha: 0.08),
-                            labelStyle:
-                                const TextStyle(color: Colors.white60),
+                            backgroundColor: AppColors.bgMid,
+                            side: const BorderSide(
+                                color: AppColors.cardBorder),
+                            labelStyle: const TextStyle(
+                                color: AppColors.textSecondary),
                           )
-                        : Chip(label: Text(m.clue!)),
+                        : Chip(
+                            label: Text(m.clue!),
+                            backgroundColor: AppColors.cyan
+                                .withValues(alpha: 0.12),
+                            side: BorderSide(
+                                color: AppColors.cyan
+                                    .withValues(alpha: 0.4)),
+                            labelStyle: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
               );
             },
           ),
@@ -537,6 +572,7 @@ class _CluePhaseOnlineState extends ConsumerState<_CluePhaseOnline> {
                 ),
                 const SizedBox(width: 8),
                 FilledButton(
+                  style: lavenderButtonStyle(),
                   onPressed: () => _submit(secretWord),
                   child: const Text('Send'),
                 ),
@@ -547,7 +583,7 @@ class _CluePhaseOnlineState extends ConsumerState<_CluePhaseOnline> {
           const Padding(
             padding: EdgeInsets.all(12),
             child: Text('Wait for your turn…',
-                style: TextStyle(color: Colors.white70)),
+                style: TextStyle(color: AppColors.textSecondary)),
           ),
         // Voting opens automatically the moment the last clue lands, so no
         // host button here — just a status line.
@@ -556,7 +592,7 @@ class _CluePhaseOnlineState extends ConsumerState<_CluePhaseOnline> {
           child: Text(
             allCluesIn ? 'Opening voting…' : 'Waiting for clues…',
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.white70),
+            style: const TextStyle(color: AppColors.textSecondary),
           ),
         ),
       ],
@@ -576,13 +612,14 @@ class _Countdown extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(Icons.timer,
-            size: 20, color: urgent ? Colors.redAccent : Colors.white70),
+            size: 20,
+            color: urgent ? AppColors.imposter : AppColors.textSecondary),
         const SizedBox(width: 6),
         Text('${seconds}s',
             style: TextStyle(
               fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: urgent ? Colors.redAccent : Colors.white,
+              fontWeight: FontWeight.w800,
+              color: urgent ? AppColors.imposter : AppColors.textPrimary,
             )),
       ],
     );
@@ -665,7 +702,7 @@ class _VotingOnlineState extends ConsumerState<_VotingOnline> {
                   padding: EdgeInsets.all(8),
                   child: Text('You were eliminated — watch the rest!',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white70)),
+                      style: TextStyle(color: AppColors.textSecondary)),
                 ),
             ],
           ),
@@ -676,7 +713,7 @@ class _VotingOnlineState extends ConsumerState<_VotingOnline> {
             allVoted
                 ? 'Tallying votes…'
                 : 'Results show automatically once everyone has voted.',
-            style: const TextStyle(color: Colors.white70),
+            style: const TextStyle(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
         ),
@@ -775,12 +812,27 @@ class _RevealOnline extends ConsumerWidget {
                             textAlign: TextAlign.center),
                         const SizedBox(height: 12),
                         Chip(
-                          label: Text(wasImposter
-                              ? 'They were an IMPOSTER'
-                              : 'They were a CIVILIAN'),
-                          backgroundColor: wasImposter
-                              ? Colors.red.shade900
-                              : Colors.green.shade900,
+                          label: Text(
+                            wasImposter
+                                ? 'They were an IMPOSTER'
+                                : 'They were a CIVILIAN',
+                            style: TextStyle(
+                              color: wasImposter
+                                  ? AppColors.imposter
+                                  : AppColors.civilian,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          side: BorderSide(
+                            color: (wasImposter
+                                    ? AppColors.imposter
+                                    : AppColors.civilian)
+                                .withValues(alpha: 0.6),
+                          ),
+                          backgroundColor: (wasImposter
+                                  ? AppColors.imposter
+                                  : AppColors.civilian)
+                              .withValues(alpha: 0.12),
                         ),
                       ],
                     ),
@@ -866,7 +918,8 @@ class _GameOverOnlineState extends ConsumerState<_GameOverOnline> {
           children: [
             Icon(civiliansWon ? Icons.verified_user : Icons.theater_comedy,
                 size: 80,
-                color: civiliansWon ? Colors.greenAccent : Colors.redAccent),
+                color:
+                    civiliansWon ? AppColors.civilian : AppColors.imposter),
             const SizedBox(height: 12),
             Text(civiliansWon ? 'CIVILIANS WIN!' : 'IMPOSTERS WIN!',
                 style: Theme.of(context)
@@ -894,8 +947,8 @@ class _GameOverOnlineState extends ConsumerState<_GameOverOnline> {
                                 : Icons.verified_user,
                             size: 18,
                             color: entry.value == Role.imposter.name
-                                ? Colors.redAccent
-                                : Colors.greenAccent,
+                                ? AppColors.imposter
+                                : AppColors.civilian,
                           ),
                           const SizedBox(width: 8),
                           Text(
@@ -910,6 +963,7 @@ class _GameOverOnlineState extends ConsumerState<_GameOverOnline> {
             const SizedBox(height: 24),
             if (widget.isHost) ...[
               FilledButton.icon(
+                style: lavenderButtonStyle(),
                 icon: _restarting
                     ? const SizedBox(
                         width: 18,
@@ -927,11 +981,14 @@ class _GameOverOnlineState extends ConsumerState<_GameOverOnline> {
                 padding: EdgeInsets.only(bottom: 8),
                 child: Text(
                   'The host can start another round with the same players.',
-                  style: TextStyle(color: Colors.white70),
+                  style: TextStyle(color: AppColors.textSecondary),
                   textAlign: TextAlign.center,
                 ),
               ),
             TextButton.icon(
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.primary,
+              ),
               icon: const Icon(Icons.home),
               label: const Text('Back to Home'),
               onPressed: () =>

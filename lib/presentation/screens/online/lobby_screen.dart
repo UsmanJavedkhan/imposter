@@ -6,6 +6,7 @@ import '../../../application/game_providers.dart';
 import '../../../application/online_providers.dart';
 import '../../../application/presence.dart';
 import '../../../domain/engine/imposter_rules.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/gradient_background.dart';
 import '../../widgets/ui_kit.dart';
 import 'online_game_screen.dart';
@@ -48,7 +49,8 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen>
     if (mounted) Navigator.of(context).popUntil((r) => r.isFirst);
   }
 
-  Future<void> _start(int playerCount, String themeName, int imposterCount) async {
+  Future<void> _start(
+      int playerCount, String themeName, int imposterCount) async {
     if (playerCount < kMinPlayers) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Need at least $kMinPlayers players.')),
@@ -57,9 +59,9 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen>
     }
     if (!isValidImposterCount(playerCount, imposterCount)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(
-            'Too many imposters for $playerCount players '
-            '(max ${maxImposters(playerCount)}).')),
+        SnackBar(
+            content: Text('Too many imposters for $playerCount players '
+                '(max ${maxImposters(playerCount)}).')),
       );
       return;
     }
@@ -99,10 +101,14 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen>
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
         title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: AppColors.primary),
             tooltip: 'Leave room',
             onPressed: _leave,
           ),
@@ -112,71 +118,105 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen>
         child: SafeArea(
           child: roomAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('Error: $e')),
+            error: (e, _) => Center(
+              child: Text('Error: $e',
+                  style: const TextStyle(color: AppColors.textPrimary)),
+            ),
             data: (room) {
-              // Promote a new host if the original one left the lobby.
               maybeMigrateHost(room, membersAsync.value ?? const []);
               final isHost = room.hostId == uid;
               return Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
                 child: Column(
                   children: [
-                    Text('Room Code',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 4),
-                    GestureDetector(
-                      onTap: () {
-                        Clipboard.setData(ClipboardData(text: code));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Code copied!')),
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    // --- Room code card ----------------------------------
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 18),
+                      decoration: BoxDecoration(
+                        color: AppColors.cardFill,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.cardBorder),
+                      ),
+                      child: Column(
                         children: [
-                          Text(code,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 8)),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.copy, size: 20),
+                          const Text('ROOM CODE',
+                              style: TextStyle(
+                                  color: AppColors.cyan,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.4)),
+                          const SizedBox(height: 6),
+                          GestureDetector(
+                            onTap: () {
+                              Clipboard.setData(ClipboardData(text: code));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Code copied!')),
+                              );
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(code,
+                                    style: const TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 8,
+                                      color: AppColors.textPrimary,
+                                    )),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.copy,
+                                    size: 18,
+                                    color: AppColors.textSecondary),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                              'Theme: ${room.themeName}  •  Imposters: ${room.imposterCount}',
+                              style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 13)),
                         ],
                       ),
                     ),
-                    Text('Theme: ${room.themeName}  •  Imposters: ${room.imposterCount}',
-                        style: const TextStyle(color: Colors.white70)),
-                    const Divider(height: 32),
+                    const SizedBox(height: 18),
+
+                    // --- Players section --------------------------------
                     Expanded(
                       child: membersAsync.when(
-                        loading: () =>
-                            const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text('Error: $e')),
+                        loading: () => const Center(
+                            child: CircularProgressIndicator()),
+                        error: (e, _) => Center(
+                            child: Text('Error: $e',
+                                style: const TextStyle(
+                                    color: AppColors.textPrimary))),
                         data: (members) => ListView(
                           children: [
-                            Text('Players (${members.length})',
-                                style: Theme.of(context).textTheme.titleLarge),
-                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(Icons.groups,
+                                    color: AppColors.cyan, size: 18),
+                                const SizedBox(width: 6),
+                                SectionLabel(
+                                    'Players (${members.length})'),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
                             for (final m in members)
-                              ListTile(
-                                leading: CircleAvatar(
-                                    child: Text(m.name.isNotEmpty
-                                        ? m.name[0].toUpperCase()
-                                        : '?')),
-                                title: Text(m.name),
-                                trailing: m.uid == room.hostId
-                                    ? const Chip(label: Text('Host'))
-                                    : (m.isConnected
-                                        ? null
-                                        : const Icon(Icons.wifi_off,
-                                            color: Colors.orange)),
+                              _PlayerListTile(
+                                name: m.name,
+                                isHost: m.uid == room.hostId,
+                                isConnected: m.isConnected,
+                                isMe: m.uid == uid,
                               ),
                           ],
                         ),
                       ),
                     ),
+
                     if (isHost)
                       SizedBox(
                         width: double.infinity,
@@ -195,13 +235,86 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen>
                       const Padding(
                         padding: EdgeInsets.all(8),
                         child: Text('Waiting for the host to start…',
-                            style: TextStyle(color: Colors.white70)),
+                            style: TextStyle(
+                                color: AppColors.textSecondary)),
                       ),
                   ],
                 ),
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PlayerListTile extends StatelessWidget {
+  const _PlayerListTile({
+    required this.name,
+    required this.isHost,
+    required this.isConnected,
+    required this.isMe,
+  });
+
+  final String name;
+  final bool isHost;
+  final bool isConnected;
+  final bool isMe;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppColors.cardFill,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.cardBorder),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppColors.cyan.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                name.isNotEmpty ? name[0].toUpperCase() : '?',
+                style: const TextStyle(
+                    color: AppColors.cyan, fontWeight: FontWeight.w800),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(isMe ? '$name (you)' : name,
+                  style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w700)),
+            ),
+            if (isHost)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: AppColors.primary.withValues(alpha: 0.12),
+                ),
+                child: const Text('Host',
+                    style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.6)),
+              )
+            else if (!isConnected)
+              const Icon(Icons.wifi_off,
+                  color: AppColors.amberHint, size: 18),
+          ],
         ),
       ),
     );

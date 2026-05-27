@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_theme.dart';
+
 /// A small amber "Hint: …" pill shown on the imposter's role card so they
 /// have a place to start without learning the secret word.
 class HintChip extends StatelessWidget {
@@ -12,20 +14,25 @@ class HintChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.amber.withValues(alpha: 0.18),
+        color: AppColors.amberHint.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.amber.shade300),
+        border:
+            Border.all(color: AppColors.amberHint.withValues(alpha: 0.5)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.lightbulb_outline, size: 18, color: Colors.amber),
+          const Icon(Icons.lightbulb_outline,
+              size: 18, color: AppColors.amberHint),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
               'Hint: $text',
               textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],

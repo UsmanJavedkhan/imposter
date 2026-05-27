@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../theme/app_theme.dart';
+
 /// A hold-to-peek card that flips in 3D from [back] (the cover) to [front]
 /// (the secret) while the user keeps a finger pressed on it. Releasing the
 /// press flips it back to the cover.
@@ -67,11 +69,15 @@ class _FlipCardState extends State<FlipCard>
       width: widget.width,
       height: widget.height,
       decoration: BoxDecoration(
-        color: color ?? Colors.white.withValues(alpha: 0.07),
+        color: color ?? AppColors.cardFill,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white24, width: 1.5),
-        boxShadow: const [
-          BoxShadow(color: Colors.black45, blurRadius: 24, offset: Offset(0, 12)),
+        border: Border.all(color: AppColors.cardBorder, width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
         ],
       ),
       padding: const EdgeInsets.all(24),

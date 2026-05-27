@@ -159,30 +159,23 @@ class _RoleCardState extends State<_RoleCard>
   Widget build(BuildContext context) {
     final isImposter = widget.player.isImposter;
 
-    // Background tint stays neutral until the card is held open, then hints
-    // at the role; it eases back to neutral as the card flips closed.
+    // Page background stays light at all times; the CARD surface picks up
+    // the role tint while it's held open, so the contrast switch happens at
+    // the card level (not the whole screen flipping dark).
     return AnimatedBuilder(
       animation: _flip,
       builder: (context, _) {
         final showFront = _flip.value > 0.5;
-        final List<Color> bg = !showFront
-            ? AppColors.background
-            : (isImposter
-                ? AppColors.imposterBackground
-                : AppColors.civilianBackground);
-
         return Scaffold(
           appBar: AppBar(
-            title: Padding(
-    padding: const EdgeInsets.only(top: 16.0), // Adjust the padding values as needed
-    child: Text('Pass to ${widget.player.name}'),
-  ),
+            title: Text('Pass to ${widget.player.name}',
+                style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w800)),
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
           ),
-          extendBodyBehindAppBar: true,
           body: GradientBackground(
-            colors: bg,
             child: SafeArea(
               child: Center(
                 child: Padding(
@@ -229,7 +222,8 @@ class _RoleCardState extends State<_RoleCard>
                                     Theme.of(context).textTheme.titleMedium),
                             const SizedBox(height: 4),
                             const Text('Release to hide it again',
-                                style: TextStyle(color: Colors.white60)),
+                                style:
+                                    TextStyle(color: AppColors.textSecondary)),
                           ],
                         ),
                     ],
@@ -244,15 +238,22 @@ class _RoleCardState extends State<_RoleCard>
   }
 
   Widget _cardShell({required Widget child, Color? color}) {
+    // The role card is a white surface with a soft drop shadow on the light
+    // background, and reuses [color] as a faint role tint once the player
+    // holds it open (passed in by [_front]).
     return Container(
       width: 280,
       height: 360,
       decoration: BoxDecoration(
-        color: color ?? Colors.white.withValues(alpha: 0.08),
+        color: color ?? AppColors.cardFill,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white24, width: 1.5),
-        boxShadow: const [
-          BoxShadow(color: Colors.black45, blurRadius: 20, offset: Offset(0, 10)),
+        border: Border.all(color: AppColors.cardBorder, width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
         ],
       ),
       padding: const EdgeInsets.all(24),
@@ -265,7 +266,8 @@ class _RoleCardState extends State<_RoleCard>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.help_outline, size: 72, color: Colors.white70),
+          const Icon(Icons.help_outline,
+              size: 72, color: AppColors.textSecondary),
           const SizedBox(height: 16),
           Text(widget.player.name,
               style: Theme.of(context)
@@ -280,17 +282,28 @@ class _RoleCardState extends State<_RoleCard>
   }
 
   Widget _front(bool isImposter) {
+    // Card fills with a faint role tint when held — strong enough to read at
+    // a glance, soft enough that the dark navy text stays comfortably legible.
+    final tint = (isImposter ? AppColors.imposter : AppColors.civilian)
+        .withValues(alpha: 0.10);
+    final accent = isImposter ? AppColors.imposter : AppColors.civilian;
+
     if (isImposter) {
       return _cardShell(
+        color: tint,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.theater_comedy, size: 72, color: Colors.white),
+            Icon(Icons.theater_comedy, size: 72, color: accent),
             const SizedBox(height: 16),
-            const Text('YOU ARE THE\nIMPOSTER',
+            Text('YOU ARE THE\nIMPOSTER',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 26, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                  fontSize: 26,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1,
+                  color: accent,
+                )),
             const SizedBox(height: 16),
             Text('Theme: ${widget.themeName}',
                 style: Theme.of(context).textTheme.titleMedium),
@@ -302,20 +315,26 @@ class _RoleCardState extends State<_RoleCard>
             ),
             const SizedBox(height: 8),
             const Text('Blend in — you do NOT know the word.',
-                textAlign: TextAlign.center),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.textSecondary)),
           ],
         ),
       );
     }
     return _cardShell(
+      color: tint,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('The secret word is'),
+          Text('The secret word is',
+              style: TextStyle(color: accent, fontWeight: FontWeight.w800)),
           const SizedBox(height: 12),
           Text(widget.secretWord,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+              style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.textPrimary)),
           const SizedBox(height: 16),
           Text('Theme: ${widget.themeName}',
               style: Theme.of(context).textTheme.titleMedium),
@@ -501,12 +520,27 @@ class _ResultView extends ConsumerWidget {
                         textAlign: TextAlign.center),
                     const SizedBox(height: 8),
                     Chip(
-                      label: Text(eliminated.isImposter
-                          ? 'They were an IMPOSTER'
-                          : 'They were a CIVILIAN'),
-                      backgroundColor: eliminated.isImposter
-                          ? Colors.red.shade900
-                          : Colors.green.shade900,
+                      label: Text(
+                        eliminated.isImposter
+                            ? 'They were an IMPOSTER'
+                            : 'They were a CIVILIAN',
+                        style: TextStyle(
+                          color: eliminated.isImposter
+                              ? AppColors.imposter
+                              : AppColors.civilian,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      side: BorderSide(
+                        color: (eliminated.isImposter
+                                ? AppColors.imposter
+                                : AppColors.civilian)
+                            .withValues(alpha: 0.6),
+                      ),
+                      backgroundColor: (eliminated.isImposter
+                              ? AppColors.imposter
+                              : AppColors.civilian)
+                          .withValues(alpha: 0.12),
                     ),
                   ],
                 ),
@@ -514,7 +548,9 @@ class _ResultView extends ConsumerWidget {
               if (isOver) ...[
                 Icon(civiliansWon ? Icons.verified_user : Icons.theater_comedy,
                     size: 72,
-                    color: civiliansWon ? Colors.greenAccent : Colors.redAccent),
+                    color: civiliansWon
+                        ? AppColors.civilian
+                        : AppColors.imposter),
                 const SizedBox(height: 8),
                 Text(civiliansWon ? 'CIVILIANS WIN!' : 'IMPOSTERS WIN!',
                     style: Theme.of(context).textTheme.headlineMedium
@@ -586,7 +622,8 @@ class _RoleSummary extends StatelessWidget {
                   Icon(
                     p.isImposter ? Icons.theater_comedy : Icons.verified_user,
                     size: 18,
-                    color: p.isImposter ? Colors.redAccent : Colors.greenAccent,
+                    color:
+                        p.isImposter ? AppColors.imposter : AppColors.civilian,
                   ),
                   const SizedBox(width: 8),
                   Text('${p.name} — ${p.isImposter ? 'Imposter' : 'Civilian'}'),
