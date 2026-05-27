@@ -65,12 +65,7 @@ class HomeScreen extends ConsumerWidget {
             children: [
               // --- Hero ----------------------------------------------------
               const SizedBox(height: 8),
-              HeroBlock(
-                heroSize: 180,
-                onSettingsTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Settings coming soon')),
-                ),
-              ),
+              const HeroBlock(heroSize: 180),
               const SizedBox(height: 14),
               const Center(child: BrandWordmark(fontSize: 48)),
               const SizedBox(height: 6),
