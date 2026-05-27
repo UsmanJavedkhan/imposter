@@ -426,8 +426,15 @@ class HeroBlock extends StatelessWidget {
               ),
             ),
           // Character is centred — the source artwork carries its own speech
-          // bubble baked in, so no overlay widgets are needed.
-          Center(child: ImposterHero(size: heroSize)),
+          // bubble baked into its left side, so we nudge the whole image
+          // slightly left so the CHARACTER reads as centred (not the
+          // bubble + character composition).
+          Center(
+            child: Transform.translate(
+              offset: Offset(-heroSize * 0.10, 0),
+              child: ImposterHero(size: heroSize),
+            ),
+          ),
         ],
       ),
     );
