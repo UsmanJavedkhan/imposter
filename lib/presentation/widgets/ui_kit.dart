@@ -358,18 +358,33 @@ class AppBottomNav extends StatelessWidget {
   }
 }
 
-/// The hero character. Just the PNG — no chrome. The home screen wraps this
-/// in a `HeroBlock` which adds the decorative sparkles, speech bubble and
-/// settings cog around it.
+/// Asset paths for the reusable character illustrations. Centralised here so
+/// no screen has to remember the filename or guess at where things live.
+abstract final class HeroAssets {
+  /// Home-screen hero (red character + baked-in speech bubble).
+  static const String home = 'assets/images/imposter_hero.png';
+
+  /// Create-room screen hero (square portrait variant).
+  static const String createRoom = 'assets/images/imposter_createRoom.png';
+}
+
+/// The hero character. Just the PNG — no chrome. Defaults to the home-screen
+/// artwork; pass an explicit [asset] to use the create-room variant or any
+/// future illustration without changing the call shape.
 class ImposterHero extends StatelessWidget {
-  const ImposterHero({super.key, this.size = 180});
+  const ImposterHero({
+    super.key,
+    this.size = 180,
+    this.asset = HeroAssets.home,
+  });
 
   final double size;
+  final String asset;
 
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      'assets/images/imposter_hero.png',
+      asset,
       width: size,
       height: size,
       fit: BoxFit.contain,

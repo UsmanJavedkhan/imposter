@@ -116,7 +116,10 @@ class _CreateRoomScreenState extends ConsumerState<CreateRoomScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const ImposterHero(size: 90),
+                      const ImposterHero(
+                        size: 90,
+                        asset: HeroAssets.createRoom,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text('Create Room',
