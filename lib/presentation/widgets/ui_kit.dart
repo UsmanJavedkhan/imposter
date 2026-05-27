@@ -3,54 +3,53 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'pressable_scale.dart';
 
-/// The "primary CTA" button style used across the app (white text on the
-/// brand-orange fill), matching the design's Play Local / Start Game cards.
-///
-/// Padding is intentionally generous on the horizontal axis so content-sized
-/// buttons (Start Clues, Pass to Next, Next Round, …) read as proper pill
-/// CTAs instead of snug labels. Full-width buttons (wrapped in a SizedBox
-/// width: infinity) ignore the extra horizontal padding, so this is safe.
+/// The "primary CTA" button style used across the app — solid coral red fill
+/// with crisp white text. Generous horizontal padding so content-sized
+/// buttons (Start Clues, Pass to Next, …) read as proper pill CTAs.
+/// Full-width buttons (wrapped in SizedBox(width: infinity)) ignore the
+/// extra horizontal padding, so this is safe everywhere.
 ButtonStyle lavenderButtonStyle() => FilledButton.styleFrom(
-      backgroundColor: AppColors.lavender,
-      foregroundColor: AppColors.onLavender,
-      disabledBackgroundColor: AppColors.lavender.withValues(alpha: 0.4),
+      backgroundColor: AppColors.primary,
+      foregroundColor: Colors.white,
+      disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 32),
       minimumSize: const Size(160, 0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
 
-/// The "IMPOSTER" wordmark rendered with the pink→magenta brand gradient.
+/// The "IMPOSTER" wordmark rendered in solid coral red. The previous gradient
+/// variant lives on for backwards-compat but the single-tone red matches the
+/// supplied mockups better.
 class BrandWordmark extends StatelessWidget {
   const BrandWordmark({
     super.key,
     this.fontSize = 44,
     this.letterSpacing = 3,
+    this.color = AppColors.primary,
   });
 
   final double fontSize;
   final double letterSpacing;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (rect) =>
-          const LinearGradient(colors: AppColors.brandGradient).createShader(rect),
-      child: Text(
-        'IMPOSTER',
-        style: TextStyle(
-          fontSize: fontSize,
-          fontWeight: FontWeight.w800,
-          letterSpacing: letterSpacing,
-          color: Colors.white,
-          height: 1.0,
-        ),
+    return Text(
+      'IMPOSTER',
+      style: TextStyle(
+        fontSize: fontSize,
+        fontWeight: FontWeight.w900,
+        letterSpacing: letterSpacing,
+        color: color,
+        height: 1.0,
       ),
     );
   }
 }
 
-/// A small uppercase, letter-spaced section heading (e.g. "RECENT THEMES").
+/// Small uppercase, letter-spaced section heading (e.g. PLAYERS / THEME).
+/// Defaults to the secondary-accent blue so it reads as quiet metadata.
 class SectionLabel extends StatelessWidget {
   const SectionLabel(this.text, {super.key, this.color = AppColors.labelPink});
 
@@ -64,14 +63,16 @@ class SectionLabel extends StatelessWidget {
       style: TextStyle(
         color: color,
         fontSize: 12,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 1.6,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 1.4,
       ),
     );
   }
 }
 
-/// A decorative blank "mask" face: a soft circle with two dot eyes.
+/// Legacy decorative "mask face" — kept so any older screen still using it
+/// keeps compiling, but the new home screen uses the imposter character
+/// image instead.
 class MaskFace extends StatelessWidget {
   const MaskFace({super.key, this.size = 56});
   final double size;
@@ -81,8 +82,8 @@ class MaskFace extends StatelessWidget {
     final dot = Container(
       width: size * 0.12,
       height: size * 0.12,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.55),
+      decoration: const BoxDecoration(
+        color: AppColors.textSecondary,
         shape: BoxShape.circle,
       ),
     );
@@ -90,9 +91,9 @@ class MaskFace extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.08),
+        color: AppColors.bgMid,
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
+        border: Border.all(color: AppColors.cardBorder),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -102,10 +103,12 @@ class MaskFace extends StatelessWidget {
   }
 }
 
-/// A rounded tappable card with an icon, title and subtitle.
+/// A rounded tappable row card with an icon tile, title and subtitle.
 ///
-/// [filled] gives the lavender primary look (dark text); otherwise it's a dark
-/// translucent surface with an [accent]-coloured icon.
+/// Two variants:
+///   • [filled] with [accent]=red → big coral "Play Local" card (white text)
+///   • [filled] with [accent]=blue → big indigo "Play Online" card (white text)
+///   • not filled → outlined white card with dark text and an accent icon tile
 class MenuCard extends StatelessWidget {
   const MenuCard({
     super.key,
@@ -128,14 +131,13 @@ class MenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleColor = filled ? AppColors.onLavender : Colors.white;
-    final subColor = filled
-        ? AppColors.onLavender.withValues(alpha: 0.65)
-        : Colors.white60;
-    final iconColor = filled ? AppColors.onLavender : accent;
+    final titleColor = filled ? Colors.white : AppColors.textPrimary;
+    final subColor =
+        filled ? Colors.white.withValues(alpha: 0.85) : AppColors.textSecondary;
     final iconBg = filled
-        ? AppColors.onLavender.withValues(alpha: 0.10)
-        : accent.withValues(alpha: 0.16);
+        ? Colors.white
+        : accent.withValues(alpha: 0.12);
+    final iconColor = filled ? accent : accent;
 
     return PressableScale(
       child: Material(
@@ -145,22 +147,23 @@ class MenuCard extends StatelessWidget {
           onTap: onTap,
           child: Ink(
             decoration: BoxDecoration(
-              color: filled ? AppColors.lavender : AppColors.cardFill,
+              color: filled ? accent : AppColors.cardFill,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                  color: filled ? Colors.transparent : AppColors.cardBorder),
+                color: filled ? Colors.transparent : AppColors.cardBorder,
+              ),
             ),
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 Container(
-                  width: 44,
-                  height: 44,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: iconBg,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(icon, color: iconColor),
+                  child: Icon(icon, color: iconColor, size: 24),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -171,18 +174,30 @@ class MenuCard extends StatelessWidget {
                       Text(title,
                           style: TextStyle(
                               color: titleColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700)),
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800)),
                       if (subtitle != null) ...[
                         const SizedBox(height: 2),
                         Text(subtitle!,
-                            style: TextStyle(color: subColor, fontSize: 12)),
+                            style: TextStyle(color: subColor, fontSize: 13)),
                       ],
                     ],
                   ),
                 ),
                 if (showArrow)
-                  Icon(Icons.arrow_forward, color: titleColor.withValues(alpha: 0.8)),
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: filled
+                          ? Colors.white
+                          : AppColors.bgMid,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.arrow_forward,
+                        size: 18,
+                        color: filled ? accent : AppColors.textSecondary),
+                  ),
               ],
             ),
           ),
@@ -192,24 +207,26 @@ class MenuCard extends StatelessWidget {
   }
 }
 
-/// A small theme tile (icon + label) for the "Recent Themes" row. When
-/// [highlighted] it uses a cyan gradient, otherwise a dark surface.
+/// A small theme tile (icon + label) used in the ALL THEMES grid. Each tile
+/// gets a pastel background and a brighter accent for the icon — colours
+/// keyed off the theme id via `AppColors.themeTileColors`.
 class ThemeChipCard extends StatelessWidget {
   const ThemeChipCard({
     super.key,
     required this.icon,
     required this.label,
-    this.highlighted = false,
+    required this.themeId,
     this.onTap,
   });
 
   final IconData icon;
   final String label;
-  final bool highlighted;
+  final String themeId;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final (tileBg, tileFg) = AppColors.themeTileColors(themeId);
     return PressableScale(
       child: Material(
         color: Colors.transparent,
@@ -218,33 +235,32 @@ class ThemeChipCard extends StatelessWidget {
           onTap: onTap,
           child: Ink(
             decoration: BoxDecoration(
-              gradient: highlighted
-                  ? const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xFF0E6E78), Color(0xFF1AA6B8)],
-                    )
-                  : null,
-              color: highlighted ? null : AppColors.cardFill,
+              color: AppColors.cardFill,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: highlighted
-                    ? AppColors.cyan.withValues(alpha: 0.6)
-                    : AppColors.cardBorder,
-              ),
+              border: Border.all(color: AppColors.cardBorder),
             ),
             padding: const EdgeInsets.all(12),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon,
-                    color: highlighted ? Colors.white : AppColors.cyan, size: 22),
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: tileBg,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: tileFg, size: 28),
+                ),
+                const SizedBox(height: 10),
                 Text(label,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                        fontWeight: FontWeight.w700, fontSize: 12.5)),
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13)),
               ],
             ),
           ),
@@ -257,7 +273,8 @@ class ThemeChipCard extends StatelessWidget {
 /// The three bottom-nav tabs used across the app.
 enum AppTab { lobby, play, rules }
 
-/// Bottom navigation bar matching the design: Lobby / Play / Rules.
+/// Bottom navigation bar matching the design — white surface with a soft
+/// rounded pill behind the active tab (coral-tinted with red icon + label).
 class AppBottomNav extends StatelessWidget {
   const AppBottomNav({super.key, required this.current, required this.onTap});
 
@@ -267,15 +284,15 @@ class AppBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.25),
-        border: Border(
-          top: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
-        ),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: AppColors.cardBorder)),
       ),
       padding: EdgeInsets.only(
-        top: 8,
-        bottom: 8 + MediaQuery.of(context).padding.bottom,
+        top: 10,
+        bottom: 10 + MediaQuery.of(context).padding.bottom,
+        left: 12,
+        right: 12,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -290,22 +307,133 @@ class AppBottomNav extends StatelessWidget {
 
   Widget _item(AppTab tab, IconData icon, String label) {
     final active = tab == current;
-    final color = active ? AppColors.cyan : Colors.white54;
+    final fg = active ? AppColors.primary : AppColors.textSecondary;
+    final bg = active
+        ? AppColors.primary.withValues(alpha: 0.12)
+        : Colors.transparent;
     return Expanded(
-      child: InkWell(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () => onTap(tab),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(height: 4),
-            Text(label,
-                style: TextStyle(
-                    color: color,
-                    fontSize: 12,
-                    fontWeight: active ? FontWeight.w700 : FontWeight.w500)),
-          ],
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: fg, size: 22),
+              if (active) ...[
+                const SizedBox(width: 6),
+                Text(label,
+                    style: TextStyle(
+                        color: fg,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13)),
+              ] else ...[
+                const SizedBox(width: 6),
+                Text(label,
+                    style: TextStyle(
+                        color: fg,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13)),
+              ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+/// The red character image used as the home-screen / create-room hero, with
+/// an optional speech bubble on the left side.
+class ImposterHero extends StatelessWidget {
+  const ImposterHero({
+    super.key,
+    this.size = 160,
+    this.showSpeechBubble = true,
+  });
+
+  final double size;
+  final bool showSpeechBubble;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size + (showSpeechBubble ? 60 : 0),
+      height: size + 24,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          if (showSpeechBubble)
+            Positioned(
+              left: 0,
+              top: size * 0.18,
+              child: _SpeechBubble(),
+            ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Image.asset(
+              'assets/images/imposter_hero.png',
+              width: size,
+              height: size,
+              fit: BoxFit.contain,
+              errorBuilder: (_, _, _) => Container(
+                width: size,
+                height: size,
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.theater_comedy,
+                    color: Colors.white, size: 64),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SpeechBubble extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.cardBorder),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(3, (i) {
+          return Padding(
+            padding: EdgeInsets.only(left: i == 0 ? 0 : 4),
+            child: Container(
+              width: 6,
+              height: 6,
+              decoration: const BoxDecoration(
+                color: AppColors.cyan,
+                shape: BoxShape.circle,
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

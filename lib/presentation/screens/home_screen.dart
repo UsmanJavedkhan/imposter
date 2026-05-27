@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/game_providers.dart';
+import '../theme/app_theme.dart';
 import '../widgets/gradient_background.dart';
 import '../widgets/ui_kit.dart';
 import 'online/online_menu_screen.dart';
@@ -13,7 +14,7 @@ IconData themeIcon(String id) {
     case 'animals':
       return Icons.pets;
     case 'food':
-      return Icons.restaurant;
+      return Icons.fastfood;
     case 'movies':
       return Icons.movie_creation_outlined;
     case 'sports':
@@ -35,7 +36,7 @@ IconData themeIcon(String id) {
   }
 }
 
-/// The first screen the player sees — the "Lobby".
+/// First screen the player sees — the "Lobby".
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -58,47 +59,89 @@ class HomeScreen extends ConsumerWidget {
     final themesAsync = ref.watch(themesProvider);
     return Scaffold(
       appBar: AppBar(
-        titleSpacing: 20,
-        title: const Align(
-          alignment: Alignment.centerLeft,
-          child: BrandWordmark(fontSize: 18, letterSpacing: 2),
+        leading: IconButton(
+          icon: const Icon(Icons.menu, color: AppColors.textPrimary),
+          onPressed: () {},
+          tooltip: 'Menu',
         ),
+        title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Settings coming soon')),
-            ),
+            icon: const Icon(Icons.ios_share_outlined,
+                color: AppColors.textPrimary),
+            onPressed: () {},
+            tooltip: 'Share',
+          ),
+          IconButton(
+            icon: const Icon(Icons.bookmark_outline,
+                color: AppColors.textPrimary),
+            onPressed: () {},
+            tooltip: 'Saved',
+          ),
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: AppColors.textPrimary),
+            onPressed: () {},
+            tooltip: 'More',
           ),
         ],
       ),
-      extendBodyBehindAppBar: true,
       body: GradientBackground(
         child: SafeArea(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
             children: [
-              const SizedBox(height: 12),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              // --- Hero ----------------------------------------------------
+              Stack(
                 children: [
-                  MaskFace(),
-                  SizedBox(width: 14),
-                  MaskFace(),
+                  // Settings cog in the top-right of the hero, matching the
+                  // mockup's circular pill button.
+                  Positioned(
+                    top: 8,
+                    right: 0,
+                    child: _CircleIconButton(
+                      icon: Icons.settings_outlined,
+                      onPressed: () => ScaffoldMessenger.of(context)
+                          .showSnackBar(const SnackBar(
+                              content: Text('Settings coming soon'))),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      const SizedBox(height: 12),
+                      const Center(child: ImposterHero(size: 170)),
+                      const SizedBox(height: 18),
+                      const Center(child: BrandWordmark(fontSize: 48)),
+                      const SizedBox(height: 6),
+                      Center(
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: const TextSpan(
+                            style: TextStyle(
+                                color: AppColors.textSecondary, fontSize: 14),
+                            children: [
+                              TextSpan(text: 'A party word game of '),
+                              TextSpan(
+                                text: 'deception',
+                                style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: 28),
-              const Center(child: BrandWordmark(fontSize: 46)),
-              const SizedBox(height: 6),
-              const Center(
-                child: Text('A party word game',
-                    style: TextStyle(color: Colors.white70)),
-              ),
-              const SizedBox(height: 28),
+
+              // --- Main menu cards ----------------------------------------
               MenuCard(
                 icon: Icons.groups,
                 title: 'Play Local',
                 subtitle: 'Pass & Play with friends',
+                accent: AppColors.primary,
                 filled: true,
                 showArrow: true,
                 onTap: () => _openSetup(context),
@@ -108,6 +151,8 @@ class HomeScreen extends ConsumerWidget {
                 icon: Icons.wifi,
                 title: 'Play Online',
                 subtitle: 'Play with friends on other devices',
+                accent: AppColors.cyan,
+                filled: true,
                 showArrow: true,
                 onTap: () => _openOnline(context),
               ),
@@ -116,11 +161,30 @@ class HomeScreen extends ConsumerWidget {
                 icon: Icons.help_outline,
                 title: 'How to Play',
                 subtitle: 'Learn the rules of deception',
-                accent: Colors.white70,
+                accent: AppColors.textSecondary,
+                showArrow: true,
                 onTap: () => showHowToPlay(context),
               ),
+
               const SizedBox(height: 24),
-              const SectionLabel('All Themes'),
+
+              // --- All themes header + grid -------------------------------
+              Row(
+                children: [
+                  const Expanded(child: SectionLabel('All Themes')),
+                  TextButton(
+                    onPressed: () => _openSetup(context),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.cyan,
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: const Text('View all',
+                        style: TextStyle(fontWeight: FontWeight.w700)),
+                  ),
+                ],
+              ),
               const SizedBox(height: 12),
               themesAsync.when(
                 loading: () => const SizedBox(
@@ -131,16 +195,18 @@ class HomeScreen extends ConsumerWidget {
                 data: (themes) => GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 3,
+                  crossAxisCount: 4,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
-                  childAspectRatio: 1.05,
+                  childAspectRatio: 0.85,
                   children: [
-                    for (final t in themes)
+                    for (final t in themes.take(4))
                       ThemeChipCard(
                         icon: themeIcon(t.id),
                         label: t.name,
-                        onTap: () => _openSetup(context, themeName: t.name),
+                        themeId: t.id,
+                        onTap: () =>
+                            _openSetup(context, themeName: t.name),
                       ),
                   ],
                 ),
@@ -161,6 +227,32 @@ class HomeScreen extends ConsumerWidget {
               showHowToPlay(context);
           }
         },
+      ),
+    );
+  }
+}
+
+/// A small white circular button used inside the hero block.
+class _CircleIconButton extends StatelessWidget {
+  const _CircleIconButton({required this.icon, required this.onPressed});
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      shape: CircleBorder(
+        side: BorderSide(color: AppColors.cardBorder),
+      ),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onPressed,
+        child: SizedBox(
+          width: 40,
+          height: 40,
+          child: Icon(icon, size: 20, color: AppColors.textPrimary),
+        ),
       ),
     );
   }

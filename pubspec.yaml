@@ -80,6 +80,7 @@ flutter:
   # Word library used to pick secret words for each theme.
   assets:
     - assets/words/themes.json
+    - assets/images/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
