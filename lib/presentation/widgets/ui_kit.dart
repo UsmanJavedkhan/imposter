@@ -350,90 +350,32 @@ class AppBottomNav extends StatelessWidget {
   }
 }
 
-/// The red character image used as the home-screen / create-room hero, with
-/// an optional speech bubble on the left side.
+/// The hero character. The source artwork (`imposter_hero.png`) already
+/// contains its own speech bubble, so this widget just renders the image —
+/// no overlays, no extra Stack chrome.
 class ImposterHero extends StatelessWidget {
-  const ImposterHero({
-    super.key,
-    this.size = 160,
-    this.showSpeechBubble = true,
-  });
+  const ImposterHero({super.key, this.size = 170});
 
   final double size;
-  final bool showSpeechBubble;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size + (showSpeechBubble ? 60 : 0),
-      height: size + 24,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          if (showSpeechBubble)
-            Positioned(
-              left: 0,
-              top: size * 0.18,
-              child: _SpeechBubble(),
-            ),
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: Image.asset(
-              'assets/images/imposter_hero.png',
-              width: size,
-              height: size,
-              fit: BoxFit.contain,
-              errorBuilder: (_, _, _) => Container(
-                width: size,
-                height: size,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.theater_comedy,
-                    color: Colors.white, size: 64),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SpeechBubble extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.cardBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(3, (i) {
-          return Padding(
-            padding: EdgeInsets.only(left: i == 0 ? 0 : 4),
-            child: Container(
-              width: 6,
-              height: 6,
-              decoration: const BoxDecoration(
-                color: AppColors.cyan,
-                shape: BoxShape.circle,
-              ),
-            ),
-          );
-        }),
+    return Image.asset(
+      'assets/images/imposter_hero.png',
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
+      // If the asset is missing for any reason fall back to a simple coloured
+      // disc so the screen still composes rather than throwing.
+      errorBuilder: (_, _, _) => Container(
+        width: size,
+        height: size,
+        decoration: const BoxDecoration(
+          color: AppColors.primary,
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(Icons.theater_comedy,
+            color: Colors.white, size: 64),
       ),
     );
   }

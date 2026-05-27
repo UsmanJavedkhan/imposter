@@ -58,81 +58,34 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themesAsync = ref.watch(themesProvider);
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: AppColors.textPrimary),
-          onPressed: () {},
-          tooltip: 'Menu',
-        ),
-        title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.ios_share_outlined,
-                color: AppColors.textPrimary),
-            onPressed: () {},
-            tooltip: 'Share',
-          ),
-          IconButton(
-            icon: const Icon(Icons.bookmark_outline,
-                color: AppColors.textPrimary),
-            onPressed: () {},
-            tooltip: 'Saved',
-          ),
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: AppColors.textPrimary),
-            onPressed: () {},
-            tooltip: 'More',
-          ),
-        ],
-      ),
       body: GradientBackground(
         child: SafeArea(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
             children: [
               // --- Hero ----------------------------------------------------
-              Stack(
-                children: [
-                  // Settings cog in the top-right of the hero, matching the
-                  // mockup's circular pill button.
-                  Positioned(
-                    top: 8,
-                    right: 0,
-                    child: _CircleIconButton(
-                      icon: Icons.settings_outlined,
-                      onPressed: () => ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(
-                              content: Text('Settings coming soon'))),
-                    ),
-                  ),
-                  Column(
+              const SizedBox(height: 12),
+              const Center(child: ImposterHero(size: 180)),
+              const SizedBox(height: 18),
+              const Center(child: BrandWordmark(fontSize: 48)),
+              const SizedBox(height: 6),
+              Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: const TextSpan(
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 14),
                     children: [
-                      const SizedBox(height: 12),
-                      const Center(child: ImposterHero(size: 170)),
-                      const SizedBox(height: 18),
-                      const Center(child: BrandWordmark(fontSize: 48)),
-                      const SizedBox(height: 6),
-                      Center(
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: const TextSpan(
-                            style: TextStyle(
-                                color: AppColors.textSecondary, fontSize: 14),
-                            children: [
-                              TextSpan(text: 'A party word game of '),
-                              TextSpan(
-                                text: 'deception',
-                                style: TextStyle(
-                                    color: AppColors.textPrimary,
-                                    fontWeight: FontWeight.w800),
-                              ),
-                            ],
-                          ),
-                        ),
+                      TextSpan(text: 'A party word game of '),
+                      TextSpan(
+                        text: 'deception',
+                        style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w800),
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
               const SizedBox(height: 28),
 
@@ -227,32 +180,6 @@ class HomeScreen extends ConsumerWidget {
               showHowToPlay(context);
           }
         },
-      ),
-    );
-  }
-}
-
-/// A small white circular button used inside the hero block.
-class _CircleIconButton extends StatelessWidget {
-  const _CircleIconButton({required this.icon, required this.onPressed});
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      shape: CircleBorder(
-        side: BorderSide(color: AppColors.cardBorder),
-      ),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onPressed,
-        child: SizedBox(
-          width: 40,
-          height: 40,
-          child: Icon(icon, size: 20, color: AppColors.textPrimary),
-        ),
       ),
     );
   }

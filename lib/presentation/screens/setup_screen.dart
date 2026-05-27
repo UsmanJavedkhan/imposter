@@ -142,25 +142,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           onPressed: () => Navigator.of(context).maybePop(),
         ),
         title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.ios_share_outlined,
-                color: AppColors.textPrimary),
-            onPressed: () {},
-            tooltip: 'Share',
-          ),
-          IconButton(
-            icon: const Icon(Icons.bookmark_outline,
-                color: AppColors.textPrimary),
-            onPressed: () {},
-            tooltip: 'Saved',
-          ),
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: AppColors.textPrimary),
-            onPressed: () {},
-            tooltip: 'More',
-          ),
-        ],
       ),
       body: GradientBackground(
         child: SafeArea(
@@ -172,35 +153,18 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
               return ListView(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                 children: [
-                  // --- Title + settings cog ------------------------------
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Game Setup',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.w900,
-                                        color: AppColors.textPrimary)),
-                            const SizedBox(height: 2),
-                            const Text('Prepare for the mystery',
-                                style: TextStyle(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 14)),
-                          ],
-                        ),
-                      ),
-                      _CircleIconButton(
-                        icon: Icons.settings_outlined,
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
+                  // --- Title ---------------------------------------------
+                  Text('Game Setup',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium
+                          ?.copyWith(
+                              fontWeight: FontWeight.w900,
+                              color: AppColors.textPrimary)),
+                  const SizedBox(height: 2),
+                  const Text('Prepare for the mystery',
+                      style: TextStyle(
+                          color: AppColors.textSecondary, fontSize: 14)),
                   const SizedBox(height: 24),
 
                   // --- Players section -----------------------------------
@@ -598,25 +562,3 @@ class _ThemeCircle extends StatelessWidget {
   }
 }
 
-class _CircleIconButton extends StatelessWidget {
-  const _CircleIconButton({required this.icon, required this.onPressed});
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      shape: CircleBorder(side: BorderSide(color: AppColors.cardBorder)),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onPressed,
-        child: SizedBox(
-          width: 40,
-          height: 40,
-          child: Icon(icon, size: 20, color: AppColors.textPrimary),
-        ),
-      ),
-    );
-  }
-}

@@ -101,22 +101,6 @@ class _CreateRoomScreenState extends ConsumerState<CreateRoomScreen> {
           onPressed: () => Navigator.of(context).maybePop(),
         ),
         title: const BrandWordmark(fontSize: 18, letterSpacing: 2),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.ios_share_outlined,
-                color: AppColors.textPrimary),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.bookmark_outline,
-                color: AppColors.textPrimary),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: AppColors.textPrimary),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: themesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -132,7 +116,7 @@ class _CreateRoomScreenState extends ConsumerState<CreateRoomScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const ImposterHero(size: 90, showSpeechBubble: false),
+                      const ImposterHero(size: 90),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text('Create Room',
