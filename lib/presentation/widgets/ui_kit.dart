@@ -406,33 +406,8 @@ class HeroBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Reserve a fixed band of vertical space so the sparkles and settings cog
-    // don't shift around as the parent ListView scrolls. Slightly taller than
-    // the hero so the speech bubble has somewhere to sit above it.
-    final blockHeight = heroSize + 48;
-    // Tightly nest the character + speech bubble so the bubble always sits
-    // adjacent to the character's upper-left, regardless of screen width.
-    final inner = SizedBox(
-      width: heroSize + 56,
-      height: heroSize + 32,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: ImposterHero(size: heroSize),
-          ),
-          Positioned(
-            left: 0,
-            top: 0,
-            child: const _SpeechBubble(),
-          ),
-        ],
-      ),
-    );
     return SizedBox(
-      height: blockHeight,
+      height: heroSize,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -450,7 +425,9 @@ class HeroBlock extends StatelessWidget {
                 onPressed: onSettingsTap!,
               ),
             ),
-          Align(alignment: Alignment.bottomCenter, child: inner),
+          // Character is centred — the source artwork carries its own speech
+          // bubble baked in, so no overlay widgets are needed.
+          Center(child: ImposterHero(size: heroSize)),
         ],
       ),
     );
@@ -549,48 +526,6 @@ class _GhostPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _GhostPainter old) => old.color != color;
-}
-
-/// White rounded "speech bubble" pill with three blue dots, used on the home
-/// hero so the character looks like it's whispering — also matches the
-/// mockup exactly.
-class _SpeechBubble extends StatelessWidget {
-  const _SpeechBubble();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.cardBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(3, (i) {
-          return Padding(
-            padding: EdgeInsets.only(left: i == 0 ? 0 : 4),
-            child: Container(
-              width: 6,
-              height: 6,
-              decoration: const BoxDecoration(
-                color: AppColors.cyan,
-                shape: BoxShape.circle,
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
 }
 
 /// Small white circular button used inside the hero block (settings cog).
