@@ -239,28 +239,36 @@ class ThemeChipCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
               border: Border.all(color: AppColors.cardBorder),
             ),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.fromLTRB(6, 12, 6, 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 56,
-                  height: 56,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: tileBg,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(icon, color: tileFg, size: 28),
+                  child: Icon(icon, color: tileFg, size: 24),
                 ),
-                const SizedBox(height: 10),
-                Text(label,
+                const SizedBox(height: 8),
+                // FittedBox keeps the label fully readable on the narrowest
+                // phones (a 4-column grid leaves ~70 px per tile, which is
+                // tight for words like "Animals" / "Countries").
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    label,
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.w700,
-                        fontSize: 13)),
+                        fontSize: 13),
+                  ),
+                ),
               ],
             ),
           ),
@@ -398,9 +406,31 @@ class HeroBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The block reserves a fixed band of vertical space so the sparkles and
-    // settings cog don't shift around as the parent ListView scrolls.
-    final blockHeight = heroSize + 40;
+    // Reserve a fixed band of vertical space so the sparkles and settings cog
+    // don't shift around as the parent ListView scrolls. Slightly taller than
+    // the hero so the speech bubble has somewhere to sit above it.
+    final blockHeight = heroSize + 48;
+    // Tightly nest the character + speech bubble so the bubble always sits
+    // adjacent to the character's upper-left, regardless of screen width.
+    final inner = SizedBox(
+      width: heroSize + 56,
+      height: heroSize + 32,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: ImposterHero(size: heroSize),
+          ),
+          Positioned(
+            left: 0,
+            top: 0,
+            child: const _SpeechBubble(),
+          ),
+        ],
+      ),
+    );
     return SizedBox(
       height: blockHeight,
       child: Stack(
@@ -410,7 +440,7 @@ class HeroBlock extends StatelessWidget {
           Positioned.fill(
             child: IgnorePointer(child: _HeroDecorations()),
           ),
-          // Settings cog in the top-right.
+          // Settings cog in the top-right (opt-in).
           if (onSettingsTap != null)
             Positioned(
               top: 0,
@@ -420,17 +450,7 @@ class HeroBlock extends StatelessWidget {
                 onPressed: onSettingsTap!,
               ),
             ),
-          // Speech bubble on the upper-left, anchored to the character.
-          Positioned(
-            left: 0,
-            top: heroSize * 0.18,
-            child: const _SpeechBubble(),
-          ),
-          // The character centred.
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ImposterHero(size: heroSize),
-          ),
+          Align(alignment: Alignment.bottomCenter, child: inner),
         ],
       ),
     );
