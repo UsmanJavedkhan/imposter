@@ -64,9 +64,14 @@ class HomeScreen extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
             children: [
               // --- Hero ----------------------------------------------------
-              const SizedBox(height: 12),
-              const Center(child: ImposterHero(size: 180)),
-              const SizedBox(height: 18),
+              const SizedBox(height: 8),
+              HeroBlock(
+                heroSize: 180,
+                onSettingsTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Settings coming soon')),
+                ),
+              ),
+              const SizedBox(height: 14),
               const Center(child: BrandWordmark(fontSize: 48)),
               const SizedBox(height: 6),
               Center(

@@ -350,11 +350,9 @@ class AppBottomNav extends StatelessWidget {
   }
 }
 
-/// The hero character. The source artwork already contains its own speech
-/// bubble baked in, so this widget is just an `Image.asset` — no overlays,
-/// no extra Stack chrome. (The earlier "imposter_hero.svg" was actually a
-/// thin wrapper around a base64-encoded PNG, so we ship the raw PNG and
-/// skip `flutter_svg` entirely.)
+/// The hero character. Just the PNG — no chrome. The home screen wraps this
+/// in a `HeroBlock` which adds the decorative sparkles, speech bubble and
+/// settings cog around it.
 class ImposterHero extends StatelessWidget {
   const ImposterHero({super.key, this.size = 180});
 
@@ -367,8 +365,6 @@ class ImposterHero extends StatelessWidget {
       width: size,
       height: size,
       fit: BoxFit.contain,
-      // Falls back to a flat circle if the asset is missing so the layout
-      // doesn't shift dramatically.
       errorBuilder: (_, _, _) => Container(
         width: size,
         height: size,
@@ -378,6 +374,226 @@ class ImposterHero extends StatelessWidget {
         ),
         child: const Icon(Icons.theater_comedy,
             color: Colors.white, size: 64),
+      ),
+    );
+  }
+}
+
+/// Home-screen hero block: scattered sparkle / ghost decorations behind the
+/// character, a speech-bubble badge on the left, and a settings cog in the
+/// top-right corner. Composed in one widget so the home screen can drop it
+/// in without piling Stack code into its build method.
+class HeroBlock extends StatelessWidget {
+  const HeroBlock({
+    super.key,
+    this.heroSize = 180,
+    this.onSettingsTap,
+  });
+
+  /// Size of the character image inside the block.
+  final double heroSize;
+
+  /// Tapped when the user presses the settings cog. If null the cog is hidden.
+  final VoidCallback? onSettingsTap;
+
+  @override
+  Widget build(BuildContext context) {
+    // The block reserves a fixed band of vertical space so the sparkles and
+    // settings cog don't shift around as the parent ListView scrolls.
+    final blockHeight = heroSize + 40;
+    return SizedBox(
+      height: blockHeight,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Decorative sparkles + tiny crewmate ghosts behind the character.
+          Positioned.fill(
+            child: IgnorePointer(child: _HeroDecorations()),
+          ),
+          // Settings cog in the top-right.
+          if (onSettingsTap != null)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: _CircleIconButton(
+                icon: Icons.settings_outlined,
+                onPressed: onSettingsTap!,
+              ),
+            ),
+          // Speech bubble on the upper-left, anchored to the character.
+          Positioned(
+            left: 0,
+            top: heroSize * 0.18,
+            child: const _SpeechBubble(),
+          ),
+          // The character centred.
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ImposterHero(size: heroSize),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Scatters small sparkle icons + tiny "ghost" silhouettes across the hero
+/// block in a soft warm grey so they read as decoration, not content.
+class _HeroDecorations extends StatelessWidget {
+  // Each entry: dx/dy in [0..1] of the block, icon, size, opacity. Hand-picked
+  // so the scatter looks intentional rather than uniform.
+  static const List<(double, double, IconData, double, double)> _items = [
+    (0.06, 0.10, Icons.star_rate_rounded, 14, 0.30),
+    (0.16, 0.42, Icons.star_rate_rounded, 10, 0.22),
+    (0.10, 0.78, Icons.star_rate_rounded, 12, 0.26),
+    (0.90, 0.08, Icons.star_rate_rounded, 12, 0.26),
+    (0.84, 0.36, Icons.star_rate_rounded, 16, 0.30),
+    (0.96, 0.62, Icons.star_rate_rounded, 10, 0.22),
+    (0.78, 0.88, Icons.star_rate_rounded, 12, 0.26),
+  ];
+
+  // Tiny crewmate silhouettes — same scatter approach but using a custom shape
+  // (a rounded body with a visor bump) so they read as Among-Us-style ghosts.
+  static const List<(double, double, double)> _ghosts = [
+    (0.86, 0.18, 18),
+    (0.04, 0.60, 16),
+    (0.88, 0.78, 14),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, c) {
+        return Stack(
+          children: [
+            for (final (dx, dy, icon, size, opacity) in _items)
+              Positioned(
+                left: dx * c.maxWidth - size / 2,
+                top: dy * c.maxHeight - size / 2,
+                child: Icon(icon,
+                    size: size,
+                    color: AppColors.textTertiary.withValues(alpha: opacity)),
+              ),
+            for (final (dx, dy, size) in _ghosts)
+              Positioned(
+                left: dx * c.maxWidth - size / 2,
+                top: dy * c.maxHeight - size / 2,
+                child: CustomPaint(
+                  size: Size(size, size * 1.15),
+                  painter: _GhostPainter(
+                    color: AppColors.textTertiary.withValues(alpha: 0.22),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Paints a tiny Among-Us-style crewmate silhouette: rounded body + visor.
+class _GhostPainter extends CustomPainter {
+  _GhostPainter({required this.color});
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = color;
+    final w = size.width;
+    final h = size.height;
+    // Body — a tall pill with a slightly narrower bottom.
+    final body = Path()
+      ..moveTo(w * 0.15, h * 0.45)
+      // Top arc
+      ..quadraticBezierTo(w * 0.5, -h * 0.05, w * 0.85, h * 0.45)
+      // Right side down
+      ..lineTo(w * 0.85, h * 0.90)
+      // Bottom right foot
+      ..quadraticBezierTo(w * 0.75, h, w * 0.62, h)
+      ..lineTo(w * 0.50, h)
+      // Bottom dip
+      ..quadraticBezierTo(w * 0.48, h * 0.92, w * 0.42, h * 0.92)
+      // Bottom left foot
+      ..lineTo(w * 0.30, h * 0.92)
+      ..quadraticBezierTo(w * 0.15, h * 0.92, w * 0.15, h * 0.80)
+      ..close();
+    canvas.drawPath(body, paint);
+    // Visor — flat-ish oval in a slightly lighter tone.
+    final visor = Paint()..color = color.withValues(alpha: color.a * 0.6);
+    canvas.drawOval(
+      Rect.fromLTWH(w * 0.30, h * 0.18, w * 0.55, h * 0.30),
+      visor,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _GhostPainter old) => old.color != color;
+}
+
+/// White rounded "speech bubble" pill with three blue dots, used on the home
+/// hero so the character looks like it's whispering — also matches the
+/// mockup exactly.
+class _SpeechBubble extends StatelessWidget {
+  const _SpeechBubble();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: AppColors.cardBorder),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(3, (i) {
+          return Padding(
+            padding: EdgeInsets.only(left: i == 0 ? 0 : 4),
+            child: Container(
+              width: 6,
+              height: 6,
+              decoration: const BoxDecoration(
+                color: AppColors.cyan,
+                shape: BoxShape.circle,
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+/// Small white circular button used inside the hero block (settings cog).
+class _CircleIconButton extends StatelessWidget {
+  const _CircleIconButton({required this.icon, required this.onPressed});
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      shape: const CircleBorder(
+        side: BorderSide(color: AppColors.cardBorder),
+      ),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onPressed,
+        child: SizedBox(
+          width: 42,
+          height: 42,
+          child: Icon(icon, size: 20, color: AppColors.textPrimary),
+        ),
       ),
     );
   }
