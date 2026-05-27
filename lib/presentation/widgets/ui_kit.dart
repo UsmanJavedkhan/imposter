@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/app_theme.dart';
 import 'pressable_scale.dart';
@@ -350,33 +351,23 @@ class AppBottomNav extends StatelessWidget {
   }
 }
 
-/// The hero character. The source artwork (`imposter_hero.png`) already
-/// contains its own speech bubble, so this widget just renders the image —
-/// no overlays, no extra Stack chrome.
+/// The hero character. The source artwork (`imposter_hero.svg`) ships with
+/// its own speech bubble, so this widget just renders the SVG — no overlays,
+/// no extra Stack chrome. SVG is rendered via `flutter_svg` so it scales
+/// crisply at any size without bitmap blurring.
 class ImposterHero extends StatelessWidget {
-  const ImposterHero({super.key, this.size = 170});
+  const ImposterHero({super.key, this.size = 180});
 
   final double size;
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/images/imposter_hero.png',
+    return SvgPicture.asset(
+      'assets/images/imposter_hero.svg',
       width: size,
       height: size,
       fit: BoxFit.contain,
-      // If the asset is missing for any reason fall back to a simple coloured
-      // disc so the screen still composes rather than throwing.
-      errorBuilder: (_, _, _) => Container(
-        width: size,
-        height: size,
-        decoration: const BoxDecoration(
-          color: AppColors.primary,
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(Icons.theater_comedy,
-            color: Colors.white, size: 64),
-      ),
+      placeholderBuilder: (_) => SizedBox(width: size, height: size),
     );
   }
 }
