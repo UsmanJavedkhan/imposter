@@ -60,13 +60,17 @@ flutter_launcher_icons:
   android: true
   ios: true
   remove_alpha_ios: true
-  image_path: "assets/icon/app_icon.png"
-  adaptive_icon_background: "#6C4DF6"
-  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+  image_path: "assets/images/imposter_createRoom.png"
+  # Android adaptive icons: coral background + the character as the foreground.
+  # The OS clips the foreground into a circle / squircle so the character may
+  # appear cropped at the edges on some devices — swap to a dedicated icon
+  # source with a ~25% safe margin to fix that properly.
+  adaptive_icon_background: "#EE5A5A"
+  adaptive_icon_foreground: "assets/images/imposter_createRoom.png"
   web:
     generate: true
-    background_color: "#6C4DF6"
-    theme_color: "#6C4DF6"
+    background_color: "#EE5A5A"
+    theme_color: "#EE5A5A"
 
 # The following section is specific to Flutter packages.
 flutter:
