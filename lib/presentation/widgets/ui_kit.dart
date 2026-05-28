@@ -254,19 +254,19 @@ class ThemeChipCard extends StatelessWidget {
                   child: Icon(icon, color: tileFg, size: 24),
                 ),
                 const SizedBox(height: 8),
-                // FittedBox keeps the label fully readable on the narrowest
-                // phones (a 4-column grid leaves ~70 px per tile, which is
-                // tight for words like "Animals" / "Countries").
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 13),
+                // Single shared font size + 2-line wrap so every label stays
+                // the SAME visual weight — long names like "Food & Drink"
+                // wrap instead of being silently scaled down.
+                Text(
+                  label,
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                    height: 1.15,
                   ),
                 ),
               ],

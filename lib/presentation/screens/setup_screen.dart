@@ -260,14 +260,22 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
   Widget _themeCard(List<GameTheme> themes) {
     final theme = _selectedTheme!;
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.cardFill,
+    // The whole card is now a single tap target — tapping anywhere on the
+    // row (icon, name, ACTIVE / CHANGE chips, the trailing shapes glyph)
+    // opens the picker. Material's InkWell provides the touch ripple.
+    return Material(
+      color: AppColors.cardFill,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
-      child: Row(
+        onTap: () => _pickTheme(themes),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.cardBorder),
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Row(
         children: [
           _ThemeCircle(themeId: theme.id, icon: themeIcon(theme.id), size: 52),
           const SizedBox(width: 14),
@@ -298,23 +306,21 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                               letterSpacing: 1)),
                     ),
                     const SizedBox(width: 8),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(20),
-                      onTap: () => _pickTheme(themes),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: AppColors.bgMid,
-                        ),
-                        child: const Text('CHANGE',
-                            style: TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 1)),
+                    // CHANGE remains a visible affordance — it shares the
+                    // same tap because the parent InkWell handles the gesture.
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: AppColors.bgMid,
                       ),
+                      child: const Text('CHANGE',
+                          style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1)),
                     ),
                   ],
                 ),
@@ -324,6 +330,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           Icon(Icons.category_outlined,
               color: AppColors.textTertiary.withValues(alpha: 0.6), size: 28),
         ],
+      ),
+        ),
       ),
     );
   }

@@ -37,10 +37,19 @@ IconData themeIcon(String id) {
 }
 
 /// First screen the player sees — the "Lobby".
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
-  void _openSetup(BuildContext context, {String? themeName}) {
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  /// Toggle for the ALL THEMES section. Off → shows the first 4 tiles and a
+  /// "View all" link. On → expands the grid to show every theme inline.
+  bool _showAllThemes = false;
+
+  void _openSetup({String? themeName}) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => SetupScreen(initialThemeName: themeName),
@@ -48,14 +57,14 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _openOnline(BuildContext context) {
+  void _openOnline() {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => const OnlineMenuScreen()),
     );
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final themesAsync = ref.watch(themesProvider);
     return Scaffold(
       body: GradientBackground(
@@ -97,7 +106,7 @@ class HomeScreen extends ConsumerWidget {
                 accent: AppColors.primary,
                 filled: true,
                 showArrow: true,
-                onTap: () => _openSetup(context),
+                onTap: _openSetup,
               ),
               const SizedBox(height: 12),
               MenuCard(
@@ -107,7 +116,7 @@ class HomeScreen extends ConsumerWidget {
                 accent: AppColors.cyan,
                 filled: true,
                 showArrow: true,
-                onTap: () => _openOnline(context),
+                onTap: _openOnline,
               ),
               const SizedBox(height: 12),
               MenuCard(
@@ -122,47 +131,63 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 24),
 
               // --- All themes header + grid -------------------------------
-              Row(
-                children: [
-                  const Expanded(child: SectionLabel('All Themes')),
-                  TextButton(
-                    onPressed: () => _openSetup(context),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.cyan,
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(0, 0),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: const Text('View all',
-                        style: TextStyle(fontWeight: FontWeight.w700)),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
               themesAsync.when(
                 loading: () => const SizedBox(
                   height: 120,
                   child: Center(child: CircularProgressIndicator()),
                 ),
                 error: (_, _) => const SizedBox.shrink(),
-                data: (themes) => GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 4,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 0.85,
-                  children: [
-                    for (final t in themes.take(4))
-                      ThemeChipCard(
-                        icon: themeIcon(t.id),
-                        label: t.name,
-                        themeId: t.id,
-                        onTap: () =>
-                            _openSetup(context, themeName: t.name),
+                data: (themes) {
+                  final canExpand = themes.length > 4;
+                  final visible = _showAllThemes
+                      ? themes
+                      : themes.take(4).toList();
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          const Expanded(child: SectionLabel('All Themes')),
+                          if (canExpand)
+                            TextButton(
+                              onPressed: () => setState(
+                                  () => _showAllThemes = !_showAllThemes),
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.cyan,
+                                padding: EdgeInsets.zero,
+                                minimumSize: const Size(0, 0),
+                                tapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Text(
+                                _showAllThemes ? 'Show less' : 'View all',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
+                      const SizedBox(height: 12),
+                      GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 4,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        childAspectRatio: 0.78,
+                        children: [
+                          for (final t in visible)
+                            ThemeChipCard(
+                              icon: themeIcon(t.id),
+                              label: t.name,
+                              themeId: t.id,
+                              onTap: () => _openSetup(themeName: t.name),
+                            ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
           ),
@@ -175,7 +200,7 @@ class HomeScreen extends ConsumerWidget {
             case AppTab.lobby:
               break;
             case AppTab.play:
-              _openSetup(context);
+              _openSetup();
             case AppTab.rules:
               showHowToPlay(context);
           }
