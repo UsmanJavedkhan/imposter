@@ -10,8 +10,14 @@ import 'join_room_screen.dart';
 
 /// Entry point for online play: pick a name, then create or join a room.
 /// Also kicks off anonymous sign-in.
+///
+/// When [pendingJoinCode] is supplied (because the user tapped an invite
+/// link / deep-link) the menu collapses to a single "Join Room ABC123 as
+/// [name]" CTA — they don't need to see Create Room.
 class OnlineMenuScreen extends ConsumerStatefulWidget {
-  const OnlineMenuScreen({super.key});
+  const OnlineMenuScreen({super.key, this.pendingJoinCode});
+
+  final String? pendingJoinCode;
 
   @override
   ConsumerState<OnlineMenuScreen> createState() => _OnlineMenuScreenState();
@@ -42,6 +48,7 @@ class _OnlineMenuScreenState extends ConsumerState<OnlineMenuScreen> {
   Widget build(BuildContext context) {
     // Ensures we are signed in anonymously before playing online.
     final auth = ref.watch(authUidProvider);
+    final pendingCode = widget.pendingJoinCode;
 
     return Scaffold(
       appBar: AppBar(
@@ -67,14 +74,21 @@ class _OnlineMenuScreenState extends ConsumerState<OnlineMenuScreen> {
             data: (_) => ListView(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
               children: [
-                Text('Play Online',
+                Text(
+                    pendingCode != null
+                        ? 'Join Room'
+                        : 'Play Online',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w900,
                         color: AppColors.textPrimary)),
                 const SizedBox(height: 2),
-                const Text('Play with friends on other devices',
-                    style: TextStyle(
-                        color: AppColors.textSecondary, fontSize: 14)),
+                Text(
+                  pendingCode != null
+                      ? "You've been invited to room $pendingCode"
+                      : 'Play with friends on other devices',
+                  style: const TextStyle(
+                      color: AppColors.textSecondary, fontSize: 14),
+                ),
                 const SizedBox(height: 24),
                 Row(
                   children: const [
@@ -98,24 +112,43 @@ class _OnlineMenuScreenState extends ConsumerState<OnlineMenuScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                MenuCard(
-                  icon: Icons.add_circle_outline,
-                  title: 'Create Room',
-                  subtitle: 'Host a new game',
-                  accent: AppColors.primary,
-                  filled: true,
-                  showArrow: true,
-                  onTap: () => _go(CreateRoomScreen(playerName: _name)),
-                ),
-                const SizedBox(height: 12),
-                MenuCard(
-                  icon: Icons.login,
-                  title: 'Join Room',
-                  subtitle: 'Enter a 6-character code',
-                  accent: AppColors.cyan,
-                  showArrow: true,
-                  onTap: () => _go(JoinRoomScreen(playerName: _name)),
-                ),
+
+                // Deep-link flow → single Join button; standard flow → both
+                // Create + Join cards.
+                if (pendingCode != null) ...[
+                  MenuCard(
+                    icon: Icons.login,
+                    title: 'Join Room $pendingCode',
+                    subtitle: 'Tap to enter the room',
+                    accent: AppColors.primary,
+                    filled: true,
+                    showArrow: true,
+                    onTap: () => _go(JoinRoomScreen(
+                      playerName: _name,
+                      initialCode: pendingCode,
+                      autoJoin: true,
+                    )),
+                  ),
+                ] else ...[
+                  MenuCard(
+                    icon: Icons.add_circle_outline,
+                    title: 'Create Room',
+                    subtitle: 'Host a new game',
+                    accent: AppColors.primary,
+                    filled: true,
+                    showArrow: true,
+                    onTap: () => _go(CreateRoomScreen(playerName: _name)),
+                  ),
+                  const SizedBox(height: 12),
+                  MenuCard(
+                    icon: Icons.login,
+                    title: 'Join Room',
+                    subtitle: 'Enter a 6-character code',
+                    accent: AppColors.cyan,
+                    showArrow: true,
+                    onTap: () => _go(JoinRoomScreen(playerName: _name)),
+                  ),
+                ],
               ],
             ),
           ),

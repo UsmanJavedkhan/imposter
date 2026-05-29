@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Join Imposter Room</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #FFFFFF, #F1F3F8);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #0D1A2D;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+    .card {
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+    }
+    .hero {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 16px;
+      object-fit: contain;
+    }
+    h1 {
+      color: #EE5A5A;
+      font-weight: 900;
+      font-size: 36px;
+      letter-spacing: 3px;
+      margin: 0;
+    }
+    .sub {
+      color: #6B7280;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    .code-wrap {
+      margin: 24px auto 28px;
+      padding: 18px 16px;
+      background: #fff;
+      border: 1px solid #E8EAF0;
+      border-radius: 16px;
+    }
+    .code-label {
+      color: #5468E7;
+      font-size: 12px;
+      letter-spacing: 1.4px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .code {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: 10px;
+      margin-top: 6px;
+      color: #0D1A2D;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 28px;
+      border: 0;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .btn-primary {
+      background: #EE5A5A;
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #5468E7;
+      color: #fff;
+    }
+    .btn-ghost {
+      background: #fff;
+      color: #0D1A2D;
+      border: 1px solid #E8EAF0;
+    }
+    .hint {
+      color: #6B7280;
+      font-size: 12px;
+      margin-top: 16px;
+      line-height: 1.4;
+    }
+    .err {
+      color: #EE5A5A;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="hero" src="/assets/assets/images/imposter_hero.png" alt="" onerror="this.style.display='none'" />
+    <h1>IMPOSTER</h1>
+    <div class="sub">You've been invited to a room</div>
+
+    <div class="code-wrap">
+      <div class="code-label">Room Code</div>
+      <div class="code" id="code">––––––</div>
+    </div>
+
+    <div id="actions">
+      <!-- Filled in by the script below depending on platform. -->
+    </div>
+
+    <p class="hint" id="hint">
+      Don't have the app yet? Tap "Get the app" to install it from Google Play.
+    </p>
+  </div>
+
+  <script>
+    (function () {
+      // ---- Parse the code from the query string -------------------------
+      const params = new URLSearchParams(window.location.search);
+      const raw = (params.get('code') || '').toUpperCase().trim();
+      const codeEl = document.getElementById('code');
+      const actionsEl = document.getElementById('actions');
+      const hintEl = document.getElementById('hint');
+
+      // Valid codes are exactly 6 chars from the createRoom alphabet.
+      const isValid = /^[A-HJ-NP-Z2-9]{6}$/.test(raw);
+
+      if (!isValid) {
+        codeEl.textContent = '––––––';
+        codeEl.classList.add('err');
+        actionsEl.innerHTML = '';
+        hintEl.textContent = 'This link is missing a valid 6-character code.';
+        return;
+      }
+      codeEl.textContent = raw;
+
+      // ---- Platform detection --------------------------------------------
+      const ua = navigator.userAgent || '';
+      const isAndroid = /android/i.test(ua);
+      const isIos = /iphone|ipad|ipod/i.test(ua);
+      const PACKAGE = 'net.impostergame.imposter_game';
+      const PLAY_URL =
+        'https://play.google.com/store/apps/details?id=' + PACKAGE;
+
+      // Android: build an intent:// URL. If the app is installed AND App
+      // Links are verified, tapping it goes straight to the app; if not,
+      // Android falls back to PLAY_URL automatically thanks to
+      // S.browser_fallback_url. (Until the app is on Play Store, that
+      // fallback will land on the Play Store "not found" page — acceptable
+      // until launch.)
+      const intentUrl =
+        'intent://imposter-game-89391.web.app/join?code=' + raw +
+        '#Intent;scheme=https;package=' + PACKAGE +
+        ';S.browser_fallback_url=' + encodeURIComponent(PLAY_URL) +
+        ';end';
+
+      // ---- Render the right buttons --------------------------------------
+      const buttons = [];
+
+      if (isAndroid) {
+        buttons.push(
+          `<a class="btn btn-primary" href="${intentUrl}">Open in Imposter</a>`,
+          `<a class="btn btn-ghost" href="${PLAY_URL}">Get the app</a>`,
+        );
+      } else if (isIos) {
+        // iOS app isn't published yet — point at the web app for now.
+        buttons.push(
+          `<a class="btn btn-primary" href="/?code=${raw}">Open in browser</a>`,
+        );
+        hintEl.textContent =
+          'iOS app coming soon. You can play in your browser for now.';
+      } else {
+        // Desktop browser — just open the web build.
+        buttons.push(
+          `<a class="btn btn-primary" href="/?code=${raw}">Play in browser</a>`,
+        );
+        hintEl.textContent =
+          'Tip: scan this link with your phone to play from your Android.';
+      }
+
+      actionsEl.innerHTML = buttons.join('');
+
+      // ---- Auto-attempt the deep link on Android once ----------------------
+      // If the app is installed + App Links verified, this opens it instantly.
+      // The browser falls back to the intent's S.browser_fallback_url if the
+      // user has no handler for the URL.
+      if (isAndroid) {
+        // Small delay so the page paints first.
+        setTimeout(() => { window.location.href = intentUrl; }, 300);
+      }
+    })();
+  </script>
+</body>
+</html>

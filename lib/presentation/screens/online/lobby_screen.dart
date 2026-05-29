@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../../../application/deep_link_service.dart';
 import '../../../application/game_providers.dart';
 import '../../../application/online_providers.dart';
 import '../../../application/presence.dart';
@@ -179,6 +181,8 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen>
                               style: const TextStyle(
                                   color: AppColors.textSecondary,
                                   fontSize: 13)),
+                          const SizedBox(height: 14),
+                          _ShareJoinLink(code: code, themeName: room.themeName),
                         ],
                       ),
                     ),
@@ -316,6 +320,76 @@ class _PlayerListTile extends StatelessWidget {
                   color: AppColors.amberHint, size: 18),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// "Invite link" pill — the canonical join URL for the room, with a Share
+/// button that hands off to the OS share sheet (or copies on web).
+class _ShareJoinLink extends StatelessWidget {
+  const _ShareJoinLink({required this.code, required this.themeName});
+
+  final String code;
+  final String themeName;
+
+  String get _url => DeepLinkService.buildJoinUrl(code);
+
+  void _share() {
+    SharePlus.instance.share(
+      ShareParams(
+        text:
+            "You're invited to play Imposter! Theme: $themeName · Code: $code\n$_url",
+        subject: 'Join my Imposter room',
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 8, 6, 8),
+      decoration: BoxDecoration(
+        color: AppColors.bgMid,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.link,
+              size: 18, color: AppColors.textSecondary),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              _url,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary),
+            ),
+          ),
+          IconButton(
+            tooltip: 'Copy link',
+            visualDensity: VisualDensity.compact,
+            icon: const Icon(Icons.copy_outlined,
+                size: 18, color: AppColors.textSecondary),
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: _url));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Invite link copied!')),
+              );
+            },
+          ),
+          IconButton(
+            tooltip: 'Share',
+            visualDensity: VisualDensity.compact,
+            icon: const Icon(Icons.ios_share,
+                size: 18, color: AppColors.primary),
+            onPressed: _share,
+          ),
+        ],
       ),
     );
   }

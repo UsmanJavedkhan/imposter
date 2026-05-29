@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "net.impostergame.imposter_game",
+      "sha256_cert_fingerprints": [
+        "07:84:19:F0:87:04:14:61:29:F4:E3:1C:34:39:E5:96:9A:5C:27:71:0E:2B:45:4C:19:FB:2E:84:35:08:6D:CA"
+      ]
+    }
+  }
+]

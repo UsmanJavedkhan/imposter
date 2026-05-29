@@ -8,17 +8,40 @@ import '../../widgets/ui_kit.dart';
 import 'lobby_screen.dart';
 
 /// A guest enters a room code to join.
+///
+/// When this screen is opened via a deep link the caller can pass
+/// [initialCode] to pre-fill the field and [autoJoin] to fire the join
+/// immediately without waiting for the user to tap the button.
 class JoinRoomScreen extends ConsumerStatefulWidget {
-  const JoinRoomScreen({super.key, required this.playerName});
+  const JoinRoomScreen({
+    super.key,
+    required this.playerName,
+    this.initialCode,
+    this.autoJoin = false,
+  });
+
   final String playerName;
+  final String? initialCode;
+  final bool autoJoin;
 
   @override
   ConsumerState<JoinRoomScreen> createState() => _JoinRoomScreenState();
 }
 
 class _JoinRoomScreenState extends ConsumerState<JoinRoomScreen> {
-  final _codeController = TextEditingController();
+  late final TextEditingController _codeController =
+      TextEditingController(text: widget.initialCode ?? '');
   bool _joining = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.autoJoin && (widget.initialCode?.length ?? 0) == 6) {
+      // Fire the join as soon as the screen has mounted so the user lands
+      // straight in the lobby.
+      WidgetsBinding.instance.addPostFrameCallback((_) => _join());
+    }
+  }
 
   @override
   void dispose() {
